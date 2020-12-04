@@ -8,8 +8,6 @@ import Nav from './Components/Nav/Nav.jsx';
 import Footer from './Components/Footer/Footer.jsx';
 import PropertyDetail from './Components/Property/Property.jsx';
 
-// const authService = new AuthService();
-
 class Routes extends Component {
   render() {
     const { authService } = this.props;
