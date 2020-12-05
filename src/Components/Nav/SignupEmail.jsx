@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { SIGNUP_API } from '../../config';
-import {
-  flexColumnCenter,
-  flexRow,
-  theme,
-} from '../../styles/theme';
+import { flexColumnCenter, flexRow, theme } from '../../styles/theme';
 import { MdClear } from 'react-icons/md';
 
 const MakeOptions = ({ num }) => {
@@ -40,13 +36,7 @@ const SignupEmail = ({ openEmailSignup, openLoginModal, closeModalAll }) => {
   const axiosSignup = () => {
     axios
       .post(SIGNUP_API, {
-        birthdayDate: userSignupInfo.birthdayDate,
-        birthdayMonth: userSignupInfo.birthdayMonth,
-        birthdayYear: userSignupInfo.birthdayYear,
-        email: userSignupInfo.email,
-        familyName: userSignupInfo.familyName,
-        givenName: userSignupInfo.givenName,
-        password: userSignupInfo.password,
+        ...userSignupInfo,
       })
       .then((res) => {
         console.log(res);
@@ -267,4 +257,3 @@ const SignupEmailModal = styled.div`
     }
   }
 `;
-
