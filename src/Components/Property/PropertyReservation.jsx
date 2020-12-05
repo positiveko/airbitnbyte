@@ -15,7 +15,6 @@ import {
 import { MdStar } from 'react-icons/md';
 import { IoIosArrowUp } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
-import { GiJusticeStar } from 'react-icons/gi';
 
 const PropertyReservation = ({
   focus,
@@ -31,24 +30,23 @@ const PropertyReservation = ({
     { id: 3, value: '유아', name: 'infant', count: 0 },
   ]);
 
-  const handleIncrement = (event) => {};
-  // const handleIncrement = (person) => {
-  //   const newCapacity = capacity.map((item) => {
-  //     if (item.id == person.id) {
-  //       return { ...person, count: person.count + 1 };
-  //     }
-  //     return item;
-  //   });
-  //   setCapacity(newCapacity);
-  // };
-
-  const handleDecrement = (person) => {
-    const newCapacity = capacity.map((item) => {
-      if (item.id === person.id) {
-        const count = person.count - 1;
-        return { ...person, count: count < 0 ? 0 : person };
+  const handleIncrement = (event) => {
+    const newCapacity = capacity.map((person) => {
+      if (person.id == event.target.id) {
+        return { ...person, count: person.count + 1 };
       }
-      return item;
+      return person;
+    });
+    setCapacity(newCapacity);
+  };
+
+  const handleDecrement = (event) => {
+    const newCapacity = capacity.map((person) => {
+      if (person.id == event.target.id) {
+        const res = person.count - 1;
+        return { ...person, count: res < 0 ? 0 : res };
+      }
+      return person;
     });
     setCapacity(newCapacity);
   };
