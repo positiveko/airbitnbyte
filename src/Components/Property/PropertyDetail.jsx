@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { flexSpaceBetweenCenter, theme } from '../../styles/theme';
+import { flexSpaceBetweenCenter } from '../../styles/theme';
 
 import { BsCalendar } from 'react-icons/bs';
 import { BsBook } from 'react-icons/bs';
@@ -146,7 +146,7 @@ const PropertyDetail = (props) => {
 };
 
 const PropertyDetailBox = styled.div`
-  max-width: 630px;
+  /* max-width: 630px; */
   margin: 20px;
 
   .title {
