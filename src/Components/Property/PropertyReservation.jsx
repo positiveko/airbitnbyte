@@ -6,7 +6,11 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import 'moment/locale/ko';
-import { flexSpaceBetweenCenter, theme } from '../../styles/theme';
+import {
+  flexSpaceBetweenCenter,
+  flexColumnSpaceBetween,
+  theme,
+} from '../../styles/theme';
 import { MdStar } from 'react-icons/md';
 import { IoIosArrowUp } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -65,24 +69,35 @@ const PropertyReservation = ({
           <div className='switch'>
             <span>성인</span>
             <div>
-              <button classname='minus'>-</button>
+              <button className='minus'>--</button>
+              <span className='switchNum'>0</span>
               <button className='plus'>+</button>
             </div>
           </div>
           <div className='switch'>
-            <span>어린이</span>
+            <div className='switchLeft'>
+              <span>어린이</span>
+              <p>2~12세</p>
+            </div>
             <div>
-              <button classname='minus'>-</button>
+              <button className='minus'>--</button>
+              <span className='switchNum'>0</span>
               <button className='plus'>+</button>
             </div>
           </div>
           <div className='switch'>
-            <span>유아</span>
+            <div className='switchLeft'>
+              <span>유아</span>
+              <p>2세 미만</p>
+            </div>
             <div>
-              <button classname='minus'>-</button>
+              <button className='minus'>--</button>
+              <span className='switchNum'>0</span>
               <button className='plus'>+</button>
             </div>
           </div>
+          <span>최대 2명. 유아는 숙박인원에 포함되지 않습니다.</span>
+          <div className='closeBtn'>닫기</div>
         </div>
       </CapacityBox>
     </PropertyReservationTab>
@@ -98,16 +113,14 @@ const PropertyReservationTab = styled.div`
   margin: 0 0 0 20px;
   border: 1px solid #cccccc;
   border-radius: 15px;
-  -webkit-box-shadow: -1px 4px 17px 8px rgba(102, 102, 102, 0.13);
-  box-shadow: -1px 4px 17px 8px rgba(102, 102, 102, 0.13);
+  -webkit-box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
+    box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
   .flexCon {
-    /* ${flexSpaceBetweenCenter} */
     display: flex;
     justify-content: space-between;
     height: 50px;
     .propertyPrice {
       font-size: 22px;
-      font-weight: 600;
     }
     .propertyReviewNum {
       color: #b1b1b1;
@@ -167,7 +180,51 @@ const CapacityBox = styled.div`
   }
 
   .capacityModal {
-    border: 1px solid #cccccc;
+    ${flexColumnSpaceBetween}
+    position: absolute;
+
+    height: 300px;
+    padding: 20px 10px;
+    border: 1px solid #e2e2e2;
     border-radius: 8px;
+    background-color: white;
+    -webkit-box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
+    box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
+    .switch {
+      ${flexSpaceBetweenCenter}
+      width: 100%;
+      height: 50px;
+      span {
+        font-size: 16px;
+      }
+      p {
+        font-size: 12px;
+        margin-top: 3px;
+      }
+      button {
+        width: 32px;
+        height: 32px;
+        font-size: 22px;
+        color: #6b6b6b;
+        background-color: white;
+        border: 1px solid #cccccc;
+        border-radius: 50%;
+        letter-spacing: -2px;
+      }
+      .switchNum {
+        margin: 0 10px;
+      }
+    }
+    span {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .closeBtn {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      text-align: end;
+      text-decoration: underline;
+    }
   }
 `;
