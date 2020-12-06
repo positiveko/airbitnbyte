@@ -43,7 +43,7 @@ const PropertyHost = (props) => {
               여러분들과의 소통과 음악적 교류를 기대하며 기다리고 있겠습니다 :-)
               감사합니다 !
             </p>
-            <p className='title'>은정님은 슈퍼호스트입니다.</p>
+            <p className='superhost'>은정님은 슈퍼호스트입니다.</p>
             <p>
               슈퍼호스트는 풍부한 경험과 높은 평점을 자랑하며 게스트가 숙소에서
               편안히 머무를 수 있도록 최선을 다하는 호스트입니다.
@@ -121,7 +121,7 @@ const HostInfo = styled.div`
           margin-bottom: 30px;
           line-height: 1.3;
         }
-        .title {
+        .superhost {
           font-weight: 500;
           margin-bottom: 10px;
         }

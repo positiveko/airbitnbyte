@@ -18,6 +18,7 @@ import { FaMedal } from 'react-icons/fa';
 import { FiShare2 } from 'react-icons/fi';
 import { BsHeart } from 'react-icons/bs';
 import PropertyHost from './PropertyHost';
+import PropertyOthers from './PropertyOthers';
 
 const Property = (props) => {
   const [propertyImages, setPropertyImages] = useState([]);
@@ -54,13 +55,13 @@ const Property = (props) => {
         <div className='propertyTitle'>{propertyInfo.propertyName}</div>
         <div className='headerInfo'>
           <div className='headerInfoLeft'>
-            <MdStar color={theme.pink} size={20} />
+            <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }}/>
             <span className='propertyRate'>4.86</span>
             <span className='propertyReviewNum'>
               ({propertyInfo.reviews?.length})
             </span>
             <span className='superhost'>
-              <FaMedal color={theme.pink} />
+              <FaMedal color={theme.pink} style={{ marginRight: 5 }}/>
               슈퍼호스트
             </span>
             <span className='propertyLocation'>
@@ -114,56 +115,55 @@ const Property = (props) => {
       )}
       {propertyInfo.propertyId && <PropertyMap propertyInfo={propertyInfo} />}
       <PropertyHost />
-      <section className='propertyFooter'>
+      <PropertyFooter>
         <div className='propertyFooterTitle title'>알아두어야 할 사항</div>
-        <div className='footerRule'>
-          <p className='subtitle'>숙소 이용규칙</p>
-          <p>체크인 시간: 오후 3:00 이후</p>
-          <p>흡연 금지</p>
-          <p>반려동물 동반 가능</p>
-        </div>
-        <div className='footerSafety'>
-          <p className='subtitle'>건강과 안전</p>
-          <p>
-            에어비트앤바이트의 강화된 청소 절차 준수에 동의했습니다. 자세히
-            알아보기
-          </p>
-          <p>
-            에이비트앤바이트의 사회적 거리 두기 및 관련 가이드라인이 적용됩니다.
-          </p>
-          <p>일산화탄소 경보기</p>
-          <p>화재경보기</p>
-        </div>
-        <div className='footerRefund'>
-          <p className='subtitle'>환불 정책</p>
-          <p>체크인 24시간 전까지 수수료 없이 예약 취소 가능</p>
-          <p>
-            그 이후로는 체크인 전에 취소하면 첫 1박 요금과 서비스 수수료를
-            제외한 전액이 환불됩니다.
-          </p>
-        </div>
-      </section>
-      <section className='otherProperty'>
-        <div className='otherPropertyHeader'>
-          <div className='otherPropertyTitle title'>숙소 더 보기</div>
-          <button>←</button> <button>→</button>
-        </div>
-        <div className='propertyList'>
-          <div className='propertyBox'>
-            <img src='/images/property1.png' alt='other property' />
-            <p className='propertyRate'>★ 4.81(21)</p>
-            <p className='propertyInfo'>호텔 객실 침대 2개</p>
-            <p className='propertyName'>패밀리 스위트 트윈</p>
+        <div className='gridBox'>
+          <div className='footerRule'>
+            <p className='subtitle'>숙소 이용규칙</p>
+            <p>체크인 시간: 오후 3:00 이후</p>
+            <p>흡연 금지</p>
+            <p>반려동물 동반 가능</p>
+          </div>
+          <div className='footerSafety'>
+            <p className='subtitle'>건강과 안전</p>
+            <p>
+              에어비트앤바이트의 강화된 청소 절차 준수에 동의했습니다.{' '}
+              <b>자세히 알아보기</b>
+            </p>
+            <p>
+              에이비트앤바이트의 사회적 거리 두기 및 관련 가이드라인이
+              적용됩니다.
+            </p>
+            <p>일산화탄소 경보기</p>
+            <p>화재경보기</p>
+          </div>
+          <div className='footerRefund'>
+            <p className='subtitle'>환불 정책</p>
+            <p>체크인 24시간 전까지 수수료 없이 예약 취소 가능</p>
+            <p>
+              그 이후로는 체크인 전에 취소하면 첫 1박 요금과 서비스 수수료를
+              제외한 전액이 환불됩니다. <b>자세히 알아보기</b>
+            </p>
           </div>
         </div>
-      </section>
+      </PropertyFooter>
+      {propertyInfo.propertyId && (
+        <PropertyOthers properties={propertyInfo.moreProperties} />
+      )}
     </PropertyWrapper>
   );
 };
 
+export default Property;
+
 const PropertyWrapper = styled.div`
   ${flexColumnCenter};
   padding: 0 20px;
+
+  .title {
+    font-size: 22px;
+    font-weight: 500;
+  }
 `;
 
 const Header = styled.header`
@@ -198,6 +198,10 @@ const Header = styled.header`
       &:hover {
         background-color: #f1f1f1;
       }
+      svg {
+        padding-top: 10px;
+        margin-bottom: -3px;
+      }
     }
   }
 `;
@@ -219,4 +223,34 @@ const ParagraphContainer = styled.div`
   }
 `;
 
-export default Property;
+const PropertyFooter = styled.div`
+  max-width: 1130px;
+  width: 100%;
+  margin-bottom: 50px;
+
+  .propertyFooterTitle {
+    margin: 50px 0 25px 0;
+  }
+  .subtitle {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  p {
+    line-height: 1.3;
+    margin-bottom: 10px;
+    b {
+      font-weight: 500;
+      text-decoration: underline;
+    }
+  }
+  .gridBox {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 40px;
+    .footerRule {
+    }
+    .footerSafety {
+    }
+  }
+`;
