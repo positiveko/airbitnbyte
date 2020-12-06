@@ -76,6 +76,7 @@ const GalleryModalBox = styled.div`
       height: 600px;
       /* overflow: hidden; */
     }
+    
     img {
       object-fit: cover;
       height: 100%;

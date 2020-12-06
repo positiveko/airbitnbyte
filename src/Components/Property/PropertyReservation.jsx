@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { DateRangePicker } from 'react-dates';
 
@@ -17,6 +17,7 @@ import { IoIosArrowUp } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
 
 const PropertyReservation = ({
+  propertyInfo,
   focus,
   endDate,
   startDate,
@@ -25,10 +26,21 @@ const PropertyReservation = ({
 }) => {
   const [isCapacityModalOn, setCapacityModal] = useState(false);
   const [capacity, setCapacity] = useState([
-    { id: 1, value: '성인', name: 'adult', count: 0 },
-    { id: 2, value: '어린이', name: 'child', count: 0 },
-    { id: 3, value: '유아', name: 'infant', count: 0 },
+    { value: '성인', id: 'adult', count: 0 },
+    { value: '어린이', id: 'child', count: 0 },
+    { value: '유아', id: 'infant', count: 0 },
   ]);
+  const [nights, setNights] = useState(1);
+
+  useEffect(() => {
+    setNights(calculateNights(startDate, endDate));
+  }, [startDate, endDate]);
+
+  const calculateNights = (startDate, endDate) => {
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+    return Math.abs(Math.ceil((end - start) / (1000 * 3600 * 24)));
+  };
 
   const handleIncrement = (event) => {
     const newCapacity = capacity.map((person) => {
@@ -51,12 +63,16 @@ const PropertyReservation = ({
     setCapacity(newCapacity);
   };
 
+  const money = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
   return (
     <>
       <PropertyReservationTab>
         <div className='flexCon'>
           <div className='leftCon'>
-            <span className='propertyPrice'>₩65,000</span>
+            <span className='propertyPrice'>
+              ₩{money(Math.floor(propertyInfo.price))}
+            </span>
             <span>/박</span>
           </div>
           <div className='rightCon'>
@@ -64,7 +80,9 @@ const PropertyReservation = ({
               <MdStar color={theme.pink} size={20} />
               4.86
             </span>
-            <span className='propertyReviewNum'>(85)</span>
+            <span className='propertyReviewNum'>
+              ({propertyInfo.reviews?.length})
+            </span>
           </div>
         </div>
         <CalenderBox>
@@ -92,8 +110,17 @@ const PropertyReservation = ({
             }}>
             <p>인원</p>
             <div className='capacityTotal'>
-              게스트 {capacity[0]?.count}명, 어린이 {capacity[1]?.count}명, 유아{' '}
-              {capacity[2]?.count}명
+              <span>게스트 {capacity[0]?.count}명</span>{' '}
+              {capacity[1].count ? (
+                <span>, 어린이 {capacity[1]?.count}명</span>
+              ) : (
+                ''
+              )}{' '}
+              {capacity[2].count ? (
+                <span>, 유아 {capacity[2]?.count}명</span>
+              ) : (
+                ''
+              )}
             </div>
             <button>
               {isCapacityModalOn ? (
@@ -141,20 +168,24 @@ const PropertyReservation = ({
         </span>
         <PropertyBill>
           <div>
-            <span>65,000 * 2박</span>
+            <span>
+              ₩{money(Math.floor(propertyInfo.price))} x {nights}박
+            </span>
             <span>₩130,000</span>
           </div>
           <div>
             <span>서비스 수수료</span>
-            <span>₩18,353</span>
+            <span>₩{money(Math.floor(propertyInfo.price * 0.1))}</span>
           </div>
           <div>
             <span>숙박세와 수수료</span>
-            <span>₩1,835</span>
+            <span>₩{money(Math.floor(propertyInfo.price * 0.01))}</span>
           </div>
           <div className='total'>
             <span>총 합계</span>
-            <span>₩150,188</span>
+            <span>
+              ₩{money(Math.floor(propertyInfo.price * (nights + 0.11)))}
+            </span>
           </div>
         </PropertyBill>
       </PropertyReservationTab>
@@ -167,11 +198,12 @@ export default PropertyReservation;
 const PropertyReservationTab = styled.div`
   ${flexColumn}
   position: sticky;
-  top: 20px;
+  top: 40px;
   padding: 30px 20px;
   margin: 0 0 0 20px;
   border: 1px solid #cccccc;
   border-radius: 15px;
+  z-index: 100000;
   -webkit-box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
   box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
   .flexCon {
@@ -205,11 +237,18 @@ const PropertyReservationTab = styled.div`
 const CalenderBox = styled.div`
   .DateRangePicker {
     width: 100%;
+    .DateRangePickerInput_arrow {
+      display: none;
+    }
+    svg {
+      margin: 0;
+      padding: 0;
+    }
     .DateRangePickerInput {
       display: flex;
       width: 100%;
       height: 75px;
-      margin: 10px 0 0 0;
+      margin: 20px 0 0 0;
       border: 1px solid #cccccc;
       border-radius: 10px;
       padding: 5px;
