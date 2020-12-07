@@ -39,7 +39,12 @@ const PropertyReservation = ({
   const calculateNights = (startDate, endDate) => {
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime();
-    return Math.abs(Math.ceil((end - start) / (1000 * 3600 * 24)));
+    const res = Math.abs(Math.ceil((end - start) / (1000 * 3600 * 24)));
+    if (res == 0) {
+      return 1;
+    } else {
+      return res;
+    }
   };
 
   const handleIncrement = (event) => {
@@ -100,6 +105,8 @@ const PropertyReservation = ({
             startDateId='startDate'
             endDateId='endDate'
             minimumNights={1}
+            noBorder={true}
+            hideKeyboardShortcutsPanel={true}
           />
         </CalenderBox>
         <CapacityBox>
@@ -171,14 +178,14 @@ const PropertyReservation = ({
             <span>
               ₩{money(Math.floor(propertyInfo.price))} x {nights}박
             </span>
-            <span>₩130,000</span>
+            <span>₩{money(Math.floor(propertyInfo.price * nights))}</span>
           </div>
           <div>
-            <span>서비스 수수료</span>
+            <span className='underline'>서비스 수수료</span>
             <span>₩{money(Math.floor(propertyInfo.price * 0.1))}</span>
           </div>
           <div>
-            <span>숙박세와 수수료</span>
+            <span className='underline'>숙박세와 수수료</span>
             <span>₩{money(Math.floor(propertyInfo.price * 0.01))}</span>
           </div>
           <div className='total'>
@@ -199,11 +206,12 @@ const PropertyReservationTab = styled.div`
   ${flexColumn}
   position: sticky;
   top: 40px;
+  width: 100%;
   padding: 30px 20px;
   margin: 0 0 0 20px;
   border: 1px solid #cccccc;
   border-radius: 15px;
-  z-index: 100000;
+  z-index: 100000000 important!;
   -webkit-box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
   box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
   .flexCon {
@@ -264,14 +272,42 @@ const CalenderBox = styled.div`
       }
     }
   }
+  .DayPicker {
+    margin: 0;
+  }
 
-  .CalendarDay__highlighted_calendar span.highlighted {
-    background: #8db909;
+  .DayPickerNavigation_button {
+    border: none;
+  }
+
+  .CalendarDay {
+    padding: 10px;
+    border: none;
+  }
+  .CalendarDay__selected_span {
+    background: #ebebeb; //background
+    color: black; //text
+  }
+
+  .CalendarDay__selected {
+    background-color: #575757;
     border-radius: 50%;
-    padding: 8px 10px;
-    color: #fff;
+    color: white;
+  }
+
+  .CalendarDay__selected:hover {
+    border-radius: 50%;
+    color: white;
+  }
+
+  .CalendarDay__hovered_span:hover,
+  .CalendarDay__hovered_span {
+    background-color: #ebebeb;
+    border-radius: 50%;
+    color: #575757;
   }
 `;
+
 const CapacityBox = styled.div`
   .capacitySelector {
     position: relative;
@@ -364,12 +400,16 @@ const CapacityBox = styled.div`
 const PropertyBill = styled.div`
   div {
     ${flexSpaceBetweenCenter}
-    margin-bottom: 15px;
-    font-size: 17px;
+    margin-bottom: 20px;
+    font-size: 16px;
+
     &:nth-child(4) {
       padding-top: 30px;
       font-weight: 500;
       border-top: 1px solid #cccccc;
+    }
+    .underline {
+      text-decoration: underline;
     }
   }
 `;

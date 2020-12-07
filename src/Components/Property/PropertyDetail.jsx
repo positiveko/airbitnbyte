@@ -246,6 +246,8 @@ const Accomodations = styled.div`
   justify-content: space-around;
   padding: 48px 0;
   border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+
 
   .accomodationsBox {
     margin:10px 0;

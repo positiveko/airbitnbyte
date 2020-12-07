@@ -57,12 +57,14 @@ const GalleryModalBox = styled.div`
   right: 0;
   bottom: 0;
   background-color: white;
+  z-index: 1000000;
 
   .xBtn {
     width: 50px;
     height: 50px;
     background-color: white;
   }
+
   .imgBox {
     position: absolute;
     width: 900px;
@@ -93,7 +95,9 @@ const GalleryModalBox = styled.div`
     .slick-dots {
       top: 620px;
     }
+
   }
+
 `;
 
 export default GalleryModal;

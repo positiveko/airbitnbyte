@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { useHistory } from "react-router-dom";
+
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import {
   flexCenter,
-  flexColumnCenter,
   flexSpaceBetweenCenter,
   theme,
 } from '../../styles/theme';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { MdStar } from 'react-icons/md';
-import { FaMedal } from 'react-icons/fa';
 import { BsHeart } from 'react-icons/bs';
 import { BsHeartFill } from 'react-icons/bs';
 
 const PropertyOthers = ({ properties }) => {
+  const history = useHistory();
+
   const settings = {
     slidesToShow: 4,
     slidesToScroll: 4,
@@ -22,6 +24,7 @@ const PropertyOthers = ({ properties }) => {
     infinite: false,
     rows: 1,
     dots: true,
+    arrows: false,
     centerPadding: 0,
     responsive: [
       {
@@ -51,7 +54,17 @@ const PropertyOthers = ({ properties }) => {
     ],
   };
 
+  const sliderRef = useRef(null);
+
   const money = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const slidePrev = () => {
+    sliderRef.current.slickPrev();
+  };
+
+  const slideNext = () => {
+    sliderRef.current.slickNext();
+  };
 
   return (
     <OtherProperties>
@@ -59,21 +72,21 @@ const PropertyOthers = ({ properties }) => {
         <div className='otherPropertyHeader'>
           <div className='otherPropertyTitle title'>숙소 더 보기</div>
           <div>
-            <button>
+            <button onClick={slidePrev}>
               <AiOutlineArrowLeft />
             </button>
             <button>
-              <AiOutlineArrowRight />
+              <AiOutlineArrowRight onClick={slideNext} />
             </button>
           </div>
         </div>
         <div className='properties'>
-          <Slider {...settings}>
+          <Slider {...settings} ref={sliderRef}>
             {properties.map((property) => (
-              <div key={property.propertyId} className='propertyBox'>
+              <div key={property.propertyId} className='propertyBox' onClick={() => history.push(`/detail/${property.propertyId}`)}>
                 <div className='pictureBox'>
                   <img src={property.propertyImage[0]} alt='other property' />
-                  <i>슈퍼호스트</i>
+                  {property.is_super && <i>슈퍼호스트</i>}
                   <button>
                     <BsHeart color='white' size={20} />
                   </button>
@@ -108,10 +121,12 @@ const OtherProperties = styled.div`
   section {
     width: 100%;
     max-width: 1130px;
+    padding-top: 50px;
 
     .otherPropertyHeader {
       ${flexSpaceBetweenCenter}
       height: 56px;
+      margin-bottom: 15px;
 
       .otherPropertyTitle {
       }
@@ -133,6 +148,25 @@ const OtherProperties = styled.div`
       margin-bottom: 60px;
       /* display: flex; */
       height: 400px;
+
+      .slick-slider {
+        position: relative;
+
+        .slick-arrow.slick-prev {
+          position: absolute;
+          top: -20px;
+          right: 30px;
+          background-color: red;
+        }
+        .slick-arrow.slick-next {
+          position: absolute;
+          top: -20px;
+          right: 0;
+          background-color: red;
+        }
+      }
+      .slick-list {
+      }
 
       .propertyBox {
         width: 270px;

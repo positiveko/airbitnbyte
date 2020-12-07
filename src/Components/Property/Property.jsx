@@ -5,6 +5,8 @@ import PropertyCalender from './PropertyCalender';
 import PropertyReview from './PropertyReview';
 import PropertyMap from './PropertyMap';
 import PropertyReservation from './PropertyReservation';
+import PropertyOthers from './PropertyOthers';
+import PropertyHost from './PropertyHost';
 import styled from 'styled-components';
 import {
   flexSpaceBetweenCenter,
@@ -12,13 +14,11 @@ import {
   theme,
 } from '../../styles/theme';
 import axios from 'axios';
-
+import { DETAIL_API } from '../../config'
 import { MdStar } from 'react-icons/md';
 import { FaMedal } from 'react-icons/fa';
 import { FiShare2 } from 'react-icons/fi';
 import { BsHeart } from 'react-icons/bs';
-import PropertyHost from './PropertyHost';
-import PropertyOthers from './PropertyOthers';
 
 const Property = (props) => {
   const [propertyImages, setPropertyImages] = useState([]);
@@ -33,20 +33,21 @@ const Property = (props) => {
   useEffect(() => {
     axios
       .get('/data/property.json')
+      // .get(DETAIL_API)
       .then(({ data: { result } }) => setPropertyInfo(result));
-  }, {});
+  }, []);
 
-  // 달력
   const [focus, setFocus] = useState(null);
-  const [focusedInput, setFocusedInput] = useState(null);
+  const [focusedInput, setFocusedInput] = useState('startDate');
   const [dateRange, setdateRange] = useState({
     startDate: null,
     endDate: null,
   });
   const { startDate, endDate } = dateRange;
+
   const handleOnDateChange = ({ startDate, endDate }) => {
     setdateRange({ startDate, endDate });
-    console.log(startDate.format());
+    console.log('handleOnDateChange', startDate, endDate);
   };
 
   return (
@@ -55,13 +56,13 @@ const Property = (props) => {
         <div className='propertyTitle'>{propertyInfo.propertyName}</div>
         <div className='headerInfo'>
           <div className='headerInfoLeft'>
-            <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }}/>
+            <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }} />
             <span className='propertyRate'>4.86</span>
             <span className='propertyReviewNum'>
               ({propertyInfo.reviews?.length})
             </span>
             <span className='superhost'>
-              <FaMedal color={theme.pink} style={{ marginRight: 5 }}/>
+              <FaMedal color={theme.pink} style={{ marginRight: 5 }} />
               슈퍼호스트
             </span>
             <span className='propertyLocation'>
@@ -89,9 +90,7 @@ const Property = (props) => {
           <PropertyDetail />
           <PropertyCalender
             setFocusedInput={setFocusedInput}
-            setFocus={setFocus}
             focusedInput={focusedInput}
-            focus={focus}
             endDate={endDate}
             startDate={startDate}
             handleOnDateChange={handleOnDateChange}
@@ -101,7 +100,6 @@ const Property = (props) => {
           <PropertyReservation
             propertyInfo={propertyInfo}
             setFocusedInput={setFocusedInput}
-            focusedInput={focusedInput}
             focus={focus}
             setFocus={setFocus}
             endDate={endDate}
@@ -170,10 +168,11 @@ const Header = styled.header`
   max-width: 1130px;
   width: 100%;
   height: 90px;
+
   .propertyTitle {
     font-size: 26px;
     font-weight: 600;
-    margin: 20px 0;
+    margin-bottom: 30px;
   }
   .headerInfo {
     ${flexSpaceBetweenCenter}
