@@ -1,21 +1,49 @@
-import React, { useRef } from 'react';
-import { useHistory } from "react-router-dom";
-
+import React, { useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
-import {
-  flexCenter,
-  flexSpaceBetweenCenter,
-  theme,
-} from '../../styles/theme';
+import { BOOKMARK_API } from '../../config';
+import { flexSet, theme } from '../../styles/theme';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { MdStar } from 'react-icons/md';
 import { BsHeart } from 'react-icons/bs';
 import { BsHeartFill } from 'react-icons/bs';
 
-const PropertyOthers = ({ properties }) => {
+const ACCESS_TOKEN = localStorage.getItem('accessToken');
+
+const PropertyOthers = ({ otherProperties }) => {
   const history = useHistory();
+  const [newOtherProperties, setNewOtherProperties] = useState(otherProperties);
+
+  const handleBookmark = (event, property) => {
+    event.stopPropagation();
+    const tmpNewOtherProperties = [...newOtherProperties];
+    const idx = tmpNewOtherProperties.indexOf(property);
+    tmpNewOtherProperties[idx].isBookmarked = !property.isBookmarked;
+    setNewOtherProperties(tmpNewOtherProperties);
+
+    if (tmpNewOtherProperties[idx].isBookmarked) {
+      axios
+        .post(BOOKMARK_API, {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          propertyId: property.propertyId,
+        })
+        .then(console.log('sendBookmark'));
+    } else {
+      axios
+        .delete(BOOKMARK_API, {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          propertyId: property.propertyId,
+        })
+        .then(console.log('deleteBookmark'));
+    }
+  };
 
   const settings = {
     slidesToShow: 4,
@@ -80,18 +108,24 @@ const PropertyOthers = ({ properties }) => {
             </button>
           </div>
         </div>
-        <div className='properties'>
+        <div className='otherProperties'>
           <Slider {...settings} ref={sliderRef}>
-            {properties.map((property) => (
-              <div key={property.propertyId} className='propertyBox' onClick={() => history.push(`/detail/${property.propertyId}`)}>
+            {newOtherProperties?.map((property) => (
+              <div
+                key={property.propertyId}
+                className='propertyBox'
+                onClick={() => history.push(`/detail/${property.propertyId}`)}>
                 <div className='pictureBox'>
                   <img src={property.propertyImage[0]} alt='other property' />
                   {property.is_super && <i>슈퍼호스트</i>}
-                  <button>
-                    <BsHeart color='white' size={20} />
-                  </button>
-                  <button>
-                    <BsHeartFill color={theme.pink} size={20} />
+                  <button
+                    id={property.propertyId}
+                    onClick={(e) => handleBookmark(e, property)}>
+                    {property.isBookmarked ? (
+                      <BsHeartFill color={theme.pink} size={20} />
+                    ) : (
+                      <BsHeart color='white' size={20} />
+                    )}
                   </button>
                 </div>
                 <p className='propertyRate'>
@@ -114,7 +148,7 @@ const PropertyOthers = ({ properties }) => {
 export default PropertyOthers;
 
 const OtherProperties = styled.div`
-  ${flexCenter}
+  ${flexSet('center', 'center')}
   width: 100%;
   background-color: #f7f7f7;
 
@@ -124,7 +158,7 @@ const OtherProperties = styled.div`
     padding-top: 50px;
 
     .otherPropertyHeader {
-      ${flexSpaceBetweenCenter}
+      ${flexSet('space-between', 'center')}
       height: 56px;
       margin-bottom: 15px;
 
@@ -144,9 +178,8 @@ const OtherProperties = styled.div`
         }
       }
     }
-    .properties {
+    .otherProperties {
       margin-bottom: 60px;
-      /* display: flex; */
       height: 400px;
 
       .slick-slider {
@@ -190,7 +223,7 @@ const OtherProperties = styled.div`
 
           i {
             position: absolute;
-            ${flexCenter}
+            ${flexSet('center', 'center')}
             top: 10px;
             left: 10px;
             width: 75px;
@@ -205,7 +238,7 @@ const OtherProperties = styled.div`
 
           button {
             position: absolute;
-            ${flexCenter}
+            ${flexSet('center', 'center')}
             right: 10px;
             top: 8px;
             background-color: transparent;

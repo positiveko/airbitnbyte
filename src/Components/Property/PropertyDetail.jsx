@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { flexSpaceBetweenCenter } from '../../styles/theme';
+import { flexSet } from '../../styles/theme';
 
 import { BsCalendar } from 'react-icons/bs';
 import { BsBook } from 'react-icons/bs';
@@ -150,7 +150,7 @@ const PropertyDetailBox = styled.div`
   }
 
   .propertyDetailHeader {
-    ${flexSpaceBetweenCenter}
+    ${flexSet('space-between', 'center')}
     padding: 24px 0;
 
     .titleInfo {

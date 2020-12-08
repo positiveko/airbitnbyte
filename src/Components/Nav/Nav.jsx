@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import NavSearchInfo from './NavSearchInfo.jsx';
 import { BiSearch } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import { theme, flexCenter, flexColumnCenter } from '../../styles/theme';
+import { theme, flexSet, flexCenter, flexColumnCenter } from '../../styles/theme';
 
 const Nav = (props) => {
   const [scrollYdata, setScrollYdata] = useState(1);
@@ -130,7 +130,7 @@ const NavSearchVar = styled.div`
 `;
 
 const NavSearchTheme = styled.div`
-  ${flexCenter}
+  ${flexSet('center', 'center')}
   margin-bottom:20px;
 
   span {

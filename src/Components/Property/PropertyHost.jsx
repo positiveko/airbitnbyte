@@ -4,8 +4,6 @@ import { MdStar } from 'react-icons/md';
 import { FaMedal } from 'react-icons/fa';
 import styled from 'styled-components';
 import {
-  flexSpaceBetweenCenter,
-  flexColumnCenter,
   theme,
   flexCenter,
 } from '../../styles/theme';

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Fade from 'react-reveal/Fade';
 import { MdClear } from 'react-icons/md';

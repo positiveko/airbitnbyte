@@ -4,12 +4,9 @@ import { DateRangePicker } from 'react-dates';
 
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
-import moment from 'moment';
 import 'moment/locale/ko';
 import {
-  flexSpaceBetweenCenter,
-  flexColumnSpaceBetween,
-  flexColumn,
+  flexSet,
   theme,
 } from '../../styles/theme';
 import { MdStar } from 'react-icons/md';
@@ -17,7 +14,7 @@ import { IoIosArrowUp } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
 
 const PropertyReservation = ({
-  propertyInfo,
+  property,
   focus,
   endDate,
   startDate,
@@ -40,7 +37,7 @@ const PropertyReservation = ({
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime();
     const res = Math.abs(Math.ceil((end - start) / (1000 * 3600 * 24)));
-    if (res == 0) {
+    if (res === 0) {
       return 1;
     } else {
       return res;
@@ -49,7 +46,7 @@ const PropertyReservation = ({
 
   const handleIncrement = (event) => {
     const newCapacity = capacity.map((person) => {
-      if (person.id == event.target.id) {
+      if (person.id === event.target.id) {
         return { ...person, count: person.count + 1 };
       }
       return person;
@@ -59,7 +56,7 @@ const PropertyReservation = ({
 
   const handleDecrement = (event) => {
     const newCapacity = capacity.map((person) => {
-      if (person.id == event.target.id) {
+      if (person.id === event.target.id) {
         const res = person.count - 1;
         return { ...person, count: res < 0 ? 0 : res };
       }
@@ -76,7 +73,7 @@ const PropertyReservation = ({
         <div className='flexCon'>
           <div className='leftCon'>
             <span className='propertyPrice'>
-              ₩{money(Math.floor(propertyInfo.price))}
+              ₩{money(Math.floor(property.price))}
             </span>
             <span>/박</span>
           </div>
@@ -86,7 +83,7 @@ const PropertyReservation = ({
               4.86
             </span>
             <span className='propertyReviewNum'>
-              ({propertyInfo.reviews?.length})
+              ({property.reviews?.length})
             </span>
           </div>
         </div>
@@ -176,22 +173,22 @@ const PropertyReservation = ({
         <PropertyBill>
           <div>
             <span>
-              ₩{money(Math.floor(propertyInfo.price))} x {nights}박
+              ₩{money(Math.floor(property.price))} x {nights}박
             </span>
-            <span>₩{money(Math.floor(propertyInfo.price * nights))}</span>
+            <span>₩{money(Math.floor(property.price * nights))}</span>
           </div>
           <div>
             <span className='underline'>서비스 수수료</span>
-            <span>₩{money(Math.floor(propertyInfo.price * 0.1))}</span>
+            <span>₩{money(Math.floor(property.price * 0.1))}</span>
           </div>
           <div>
             <span className='underline'>숙박세와 수수료</span>
-            <span>₩{money(Math.floor(propertyInfo.price * 0.01))}</span>
+            <span>₩{money(Math.floor(property.price * 0.01))}</span>
           </div>
           <div className='total'>
             <span>총 합계</span>
             <span>
-              ₩{money(Math.floor(propertyInfo.price * (nights + 0.11)))}
+              ₩{money(Math.floor(property.price * (nights + 0.11)))}
             </span>
           </div>
         </PropertyBill>
@@ -203,7 +200,7 @@ const PropertyReservation = ({
 export default PropertyReservation;
 
 const PropertyReservationTab = styled.div`
-  ${flexColumn}
+  ${flexSet('', '', 'column')}
   position: sticky;
   top: 120px;
   width: 100%;
@@ -214,10 +211,11 @@ const PropertyReservationTab = styled.div`
   z-index: 100000000 important!;
   -webkit-box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
   box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
+
   .flexCon {
-    display: flex;
-    justify-content: space-between;
+    ${flexSet('space-between', '', '')}
     height: 40px;
+
     .propertyPrice {
       font-size: 22px;
     }
@@ -245,6 +243,7 @@ const PropertyReservationTab = styled.div`
 const CalenderBox = styled.div`
   .DateRangePicker {
     width: 100%;
+
     .DateRangePickerInput_arrow {
       display: none;
     }
@@ -260,6 +259,7 @@ const CalenderBox = styled.div`
       border: 1px solid #cccccc;
       border-radius: 10px;
       padding: 5px;
+
       #startDate {
         font-size: 16px;
         font-weight: 400;
@@ -285,8 +285,8 @@ const CalenderBox = styled.div`
     border: none;
   }
   .CalendarDay__selected_span {
-    background: #ebebeb; //background
-    color: black; //text
+    background: #ebebeb;
+    color: black;
   }
 
   .CalendarDay__selected {
@@ -346,7 +346,7 @@ const CapacityBox = styled.div`
     display: none;
   }
   .capacityModal {
-    ${flexColumnSpaceBetween}
+    ${flexSet('space-between', '', 'column')}
     position: absolute;
     height: 300px;
     width: 88%;
@@ -357,7 +357,7 @@ const CapacityBox = styled.div`
     -webkit-box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
     box-shadow: -1px 11px 12px 6px rgba(102, 102, 102, 0.1);
     .switch {
-      ${flexSpaceBetweenCenter}
+      ${flexSet('space-between', 'center')}
       width: 100%;
       height: 50px;
       span {
@@ -399,7 +399,7 @@ const CapacityBox = styled.div`
 
 const PropertyBill = styled.div`
   div {
-    ${flexSpaceBetweenCenter}
+    ${flexSet('space-between', 'center')}
     margin-bottom: 20px;
     font-size: 16px;
 

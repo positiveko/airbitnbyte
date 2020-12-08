@@ -8,21 +8,34 @@ import PropertyMap from './PropertyMap';
 import PropertyReservation from './PropertyReservation';
 import PropertyOthers from './PropertyOthers';
 import PropertyHost from './PropertyHost';
-import { DETAIL_API } from '../../config';
+import { DETAIL_API, BOOKMARK_API } from '../../config';
 import { MdStar } from 'react-icons/md';
 import { FaMedal } from 'react-icons/fa';
 import { FiShare2 } from 'react-icons/fi';
 import { BsHeart } from 'react-icons/bs';
+import { BsHeartFill } from 'react-icons/bs';
 import styled from 'styled-components';
-import {
-  flexSpaceBetweenCenter,
-  flexColumnCenter,
-  theme,
-} from '../../styles/theme';
+import { flexSet, theme } from '../../styles/theme';
+
+const isBrowser = typeof window !== `undefined`;
+
+function getScrollPosition({ element, useWindow }) {
+  if (!isBrowser) return { x: 0, y: 0 };
+
+  const target = element ? element.current : document.body;
+  const position = target.getBoundingClientRect();
+
+  return useWindow
+    ? { x: window.scrollX, y: window.scrollY }
+    : { x: position.left, y: position.top };
+}
+
+const ACCESS_TOKEN = localStorage.getItem('accessToken');
 
 const Property = (props) => {
+  const [isBookmarked, setBookmarked] = useState(true);
   const [propertyImages, setPropertyImages] = useState([]);
-  const [propertyInfo, setPropertyInfo] = useState({});
+  const [property, setProperty] = useState({});
   const [focus, setFocus] = useState(null);
   const [focusedInput, setFocusedInput] = useState('startDate');
   const [dateRange, setdateRange] = useState({
@@ -31,6 +44,31 @@ const Property = (props) => {
   });
   const { startDate, endDate } = dateRange;
 
+  const handleBookmark = (event) => {
+    event.stopPropagation();
+    setBookmarked(!isBookmarked);
+
+    if (isBookmarked) {
+      axios
+        .post(BOOKMARK_API, {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          propertyId: property.propertyId,
+        })
+        .then(console.log('sendBookmark'));
+    } else {
+      axios
+        .delete(BOOKMARK_API, {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          propertyId: property.propertyId,
+        })
+        .then(console.log('deleteBookmark'));
+    }
+  };
+
   useEffect(() => {
     axios
       .get('/data/propertyImages.json')
@@ -38,7 +76,10 @@ const Property = (props) => {
     axios
       .get('/data/property.json')
       // .get(DETAIL_API)
-      .then(({ data: { result } }) => setPropertyInfo(result));
+      .then(({ data: { result } }) => {
+        setProperty(result);
+        setBookmarked(result.isBookmarked);
+      });
   }, []);
 
   const handleOnDateChange = ({ startDate, endDate }) => {
@@ -48,13 +89,13 @@ const Property = (props) => {
   return (
     <PropertyWrapper>
       <Header>
-        <div className='propertyTitle'>{propertyInfo.propertyName}</div>
+        <div className='propertyTitle'>{property.propertyName}</div>
         <div className='headerInfo'>
           <div className='headerInfoLeft'>
             <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }} />
             <span className='propertyRate'>4.86</span>
             <span className='propertyReviewNum'>
-              ({propertyInfo.reviews?.length})
+              ({property.reviews?.length})
             </span>
             <span className='superhost'>
               <FaMedal color={theme.pink} style={{ marginRight: 5 }} />
@@ -66,11 +107,23 @@ const Property = (props) => {
           </div>
           <div className='headerInfoRight'>
             <button className='shareBtn'>
-              <FiShare2 style={{ marginRight: 5 }} />
+              <FiShare2 size={15} style={{ marginRight: 5 }} />
               공유하기
             </button>
-            <button className='wishlistBtn'>
-              <BsHeart style={{ marginRight: 5 }} />
+            <button className='BookmarkBtn' onClick={handleBookmark}>
+              {isBookmarked ? (
+                <BsHeartFill
+                  color={theme.pink}
+                  size={15}
+                  style={{ marginRight: 5 }}
+                />
+              ) : (
+                <BsHeart
+                  color={theme.pink}
+                  size={15}
+                  style={{ marginRight: 5 }}
+                />
+              )}
               저장
             </button>
           </div>
@@ -93,7 +146,7 @@ const Property = (props) => {
         </div>
         <div className='proeprtyRight'>
           <PropertyReservation
-            propertyInfo={propertyInfo}
+            property={property}
             setFocusedInput={setFocusedInput}
             focus={focus}
             setFocus={setFocus}
@@ -103,10 +156,8 @@ const Property = (props) => {
           />
         </div>
       </ParagraphContainer>
-      {propertyInfo.propertyId && (
-        <PropertyReview reviews={propertyInfo.reviews} />
-      )}
-      {propertyInfo.propertyId && <PropertyMap propertyInfo={propertyInfo} />}
+      {property.propertyId && <PropertyReview reviews={property.reviews} />}
+      {property.propertyId && <PropertyMap property={property} />}
       <PropertyHost />
       <PropertyFooter>
         <div className='propertyFooterTitle title'>알아두어야 할 사항</div>
@@ -140,8 +191,12 @@ const Property = (props) => {
           </div>
         </div>
       </PropertyFooter>
-      {propertyInfo.propertyId && (
-        <PropertyOthers properties={propertyInfo.moreProperties} />
+      {property.propertyId && (
+        <PropertyOthers
+          handleBookmark={handleBookmark}
+          otherProperties={property.moreProperties}
+
+        />
       )}
     </PropertyWrapper>
   );
@@ -150,7 +205,7 @@ const Property = (props) => {
 export default Property;
 
 const PropertyWrapper = styled.div`
-  ${flexColumnCenter};
+  ${flexSet('center', 'center', 'column')}
   margin-top: 120px;
   padding: 0 20px;
 
@@ -171,7 +226,7 @@ const Header = styled.header`
     margin-bottom: 30px;
   }
   .headerInfo {
-    ${flexSpaceBetweenCenter}
+    ${flexSet('space-between', 'center')}
     font-size: 14px;
     .superhost,
     .propertyReviewNum {
@@ -194,7 +249,6 @@ const Header = styled.header`
         background-color: #f1f1f1;
       }
       svg {
-        padding-top: 10px;
         margin-bottom: -3px;
       }
     }

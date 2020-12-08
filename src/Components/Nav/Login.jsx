@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import { flexColumnCenter, flexRow, theme } from '../../styles/theme';
+import { flexSet, flexRow,flexSet, theme } from '../../styles/theme';
 import { LOGIN_API } from '../../config';
 import { MdClear } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
@@ -113,7 +113,8 @@ const LoginModal = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  ${flexColumnCenter}
+  /* ${flexColumnCenter} */
+  ${flexSet('','center', 'column')}
   width: 570px;
   background-color: white;
   padding: 0 20px;
