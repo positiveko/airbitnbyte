@@ -205,7 +205,7 @@ export default PropertyReservation;
 const PropertyReservationTab = styled.div`
   ${flexColumn}
   position: sticky;
-  top: 40px;
+  top: 120px;
   width: 100%;
   padding: 30px 20px;
   margin: 0 0 0 20px;

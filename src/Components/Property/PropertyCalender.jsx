@@ -54,6 +54,7 @@ const CalenderBox = styled.div`
     padding: 17px;
     border: none;
   }
+  
   .CalendarDay__selected_span {
     background: #ebebeb; //background
     color: black; //text

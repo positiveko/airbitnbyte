@@ -9,6 +9,7 @@ import { MdClear } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GoMail } from 'react-icons/go';
+import Fade from 'react-reveal/Fade';
 
 const Signup = ({ authService }) => {
   const [isEmailSignup, setEmailSignup] = useState(false);
@@ -40,7 +41,7 @@ const Signup = ({ authService }) => {
       },
     })
       .then((res) => {
-        if (res.data) {
+        if (res.data.result) {
           localStorage.setItem('token', res.data.result.accessToken);
         }
       })
@@ -56,6 +57,7 @@ const Signup = ({ authService }) => {
   return (
     <>
       <SignupModal className={isSignupModalOn ? '' : 'displayNone'}>
+      <Fade bottom>
         <div className='modalContainer'>
           <div className='modalHeader'>
             <i onClick={closeModalAll}>
@@ -81,6 +83,7 @@ const Signup = ({ authService }) => {
             <span onClick={openLoginModal}>로그인</span>
           </div>
         </div>
+        </Fade>
       </SignupModal>
       {isEmailSignup && (
         <SignupEmail
@@ -104,6 +107,9 @@ const Signup = ({ authService }) => {
 export default Signup;
 
 const SignupModal = styled.div`
+  display: flex;
+  justify-content:center;
+  align-items:center;
   position: fixed;
   top: 0;
   left: 0;
@@ -126,12 +132,8 @@ const SignupModal = styled.div`
 
   .modalContainer {
     ${flexColumnCenter}
-    position: absolute;
     width: 570px;
     height: 370px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     background-color: white;
     padding: 0 20px;
     border-radius: 15px;

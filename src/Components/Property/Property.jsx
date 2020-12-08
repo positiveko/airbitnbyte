@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import PropertyGallery from './PropertyGallery';
 import PropertyDetail from './PropertyDetail';
 import PropertyCalender from './PropertyCalender';
@@ -7,36 +8,21 @@ import PropertyMap from './PropertyMap';
 import PropertyReservation from './PropertyReservation';
 import PropertyOthers from './PropertyOthers';
 import PropertyHost from './PropertyHost';
+import { DETAIL_API } from '../../config';
+import { MdStar } from 'react-icons/md';
+import { FaMedal } from 'react-icons/fa';
+import { FiShare2 } from 'react-icons/fi';
+import { BsHeart } from 'react-icons/bs';
 import styled from 'styled-components';
 import {
   flexSpaceBetweenCenter,
   flexColumnCenter,
   theme,
 } from '../../styles/theme';
-import axios from 'axios';
-import { DETAIL_API } from '../../config'
-import { MdStar } from 'react-icons/md';
-import { FaMedal } from 'react-icons/fa';
-import { FiShare2 } from 'react-icons/fi';
-import { BsHeart } from 'react-icons/bs';
 
 const Property = (props) => {
   const [propertyImages, setPropertyImages] = useState([]);
   const [propertyInfo, setPropertyInfo] = useState({});
-
-  useEffect(() => {
-    axios
-      .get('/data/propertyImages.json')
-      .then(({ data: { image } }) => setPropertyImages(image));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get('/data/property.json')
-      // .get(DETAIL_API)
-      .then(({ data: { result } }) => setPropertyInfo(result));
-  }, []);
-
   const [focus, setFocus] = useState(null);
   const [focusedInput, setFocusedInput] = useState('startDate');
   const [dateRange, setdateRange] = useState({
@@ -45,9 +31,18 @@ const Property = (props) => {
   });
   const { startDate, endDate } = dateRange;
 
+  useEffect(() => {
+    axios
+      .get('/data/propertyImages.json')
+      .then(({ data: { image } }) => setPropertyImages(image));
+    axios
+      .get('/data/property.json')
+      // .get(DETAIL_API)
+      .then(({ data: { result } }) => setPropertyInfo(result));
+  }, []);
+
   const handleOnDateChange = ({ startDate, endDate }) => {
     setdateRange({ startDate, endDate });
-    console.log('handleOnDateChange', startDate, endDate);
   };
 
   return (
@@ -156,6 +151,7 @@ export default Property;
 
 const PropertyWrapper = styled.div`
   ${flexColumnCenter};
+  margin-top: 120px;
   padding: 0 20px;
 
   .title {

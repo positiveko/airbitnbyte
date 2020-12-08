@@ -1,4 +1,7 @@
 import React from 'react';
+import { HiShieldCheck } from 'react-icons/hi';
+import { MdStar } from 'react-icons/md';
+import { FaMedal } from 'react-icons/fa';
 import styled from 'styled-components';
 import {
   flexSpaceBetweenCenter,
@@ -6,9 +9,6 @@ import {
   theme,
   flexCenter,
 } from '../../styles/theme';
-import { HiShieldCheck } from 'react-icons/hi';
-import { MdStar } from 'react-icons/md';
-import { FaMedal } from 'react-icons/fa';
 
 const PropertyHost = (props) => {
   return (
