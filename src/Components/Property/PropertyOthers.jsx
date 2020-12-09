@@ -1,48 +1,34 @@
 import React, { useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import { BOOKMARK_API } from '../../config';
-import { flexSet, theme } from '../../styles/theme';
-import { AiOutlineArrowLeft } from 'react-icons/ai';
-import { AiOutlineArrowRight } from 'react-icons/ai';
+import { theme } from '../../styles/theme';
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import { MdStar } from 'react-icons/md';
-import { BsHeart } from 'react-icons/bs';
-import { BsHeartFill } from 'react-icons/bs';
+import { BsHeart, BsHeartFill } from 'react-icons/bs';
 
 const ACCESS_TOKEN = localStorage.getItem('accessToken');
 
-const PropertyOthers = ({ otherProperties }) => {
-  const history = useHistory();
-  const [newOtherProperties, setNewOtherProperties] = useState(otherProperties);
+const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
+  const [newRecommendedProperties, setNewOtherProperties] = useState(
+    recommendedProperties
+  );
 
   const handleBookmark = (event, property) => {
     event.stopPropagation();
-    const tmpNewOtherProperties = [...newOtherProperties];
-    const idx = tmpNewOtherProperties.indexOf(property);
-    tmpNewOtherProperties[idx].isBookmarked = !property.isBookmarked;
-    setNewOtherProperties(tmpNewOtherProperties);
+    const tmpNewRecommendedProperties = [...newRecommendedProperties];
+    const idx = tmpNewRecommendedProperties.find(property);
+    tmpNewRecommendedProperties[idx].isBookmarked = !property.isBookmarked;
 
-    if (tmpNewOtherProperties[idx].isBookmarked) {
-      axios
-        .post(BOOKMARK_API, {
-          headers: {
-            Authorization: ACCESS_TOKEN,
-          },
-          propertyId: property.propertyId,
-        })
-        .then(console.log('sendBookmark'));
-    } else {
-      axios
-        .delete(BOOKMARK_API, {
-          headers: {
-            Authorization: ACCESS_TOKEN,
-          },
-          propertyId: property.propertyId,
-        })
-        .then(console.log('deleteBookmark'));
-    }
+    axios({
+      method: tmpNewRecommendedProperties[idx].isBookmarked ? 'delete' : 'get',
+      headers: {
+        Authorization: ACCESS_TOKEN,
+      },
+      propertyId: property.propertyId,
+    });
+    setNewOtherProperties(tmpNewRecommendedProperties);
   };
 
   const settings = {
@@ -108,13 +94,13 @@ const PropertyOthers = ({ otherProperties }) => {
             </button>
           </div>
         </div>
-        <div className='otherProperties'>
+        <div className='recommendedProperties'>
           <Slider {...settings} ref={sliderRef}>
-            {newOtherProperties?.map((property) => (
+            {newRecommendedProperties?.map((property) => (
               <div
                 key={property.propertyId}
                 className='propertyBox'
-                onClick={() => history.push(`/detail/${property.propertyId}`)}>
+                onClick={() => moveToDetailPage(property.propertyId)}>
                 <div className='pictureBox'>
                   <img src={property.propertyImage[0]} alt='other property' />
                   {property.is_super && <i>슈퍼호스트</i>}
@@ -148,7 +134,12 @@ const PropertyOthers = ({ otherProperties }) => {
 export default PropertyOthers;
 
 const OtherProperties = styled.div`
-  ${flexSet('center', 'center')}
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+    });
+  }};
   width: 100%;
   background-color: #f7f7f7;
 
@@ -158,7 +149,12 @@ const OtherProperties = styled.div`
     padding-top: 50px;
 
     .otherPropertyHeader {
-      ${flexSet('space-between', 'center')}
+      ${({ theme }) => {
+        return theme.flexSet({
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        });
+      }};
       height: 56px;
       margin-bottom: 15px;
 
@@ -178,7 +174,7 @@ const OtherProperties = styled.div`
         }
       }
     }
-    .otherProperties {
+    .recommendedProperties {
       margin-bottom: 60px;
       height: 400px;
 
@@ -223,7 +219,12 @@ const OtherProperties = styled.div`
 
           i {
             position: absolute;
-            ${flexSet('center', 'center')}
+            ${({ theme }) => {
+              return theme.flexSet({
+                justifyContent: 'center',
+                alignItems: 'center',
+              });
+            }};
             top: 10px;
             left: 10px;
             width: 75px;
@@ -238,7 +239,12 @@ const OtherProperties = styled.div`
 
           button {
             position: absolute;
-            ${flexSet('center', 'center')}
+            ${({ theme }) => {
+              return theme.flexSet({
+                justifyContent: 'center',
+                alignItems: 'center',
+              });
+            }};
             right: 10px;
             top: 8px;
             background-color: transparent;

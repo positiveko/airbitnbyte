@@ -1,9 +1,22 @@
 import { css } from 'styled-components';
+
+export const flexSet = ({
+  justifyContent = null,
+  alignItems = null,
+  flexDirection = null,
+}) => css`
+  display: flex;
+  justify-content: ${justifyContent};
+  align-items: ${alignItems};
+  flex-direction: ${flexDirection};
+`;
+
 export const theme = {
   pink: '#ff3a5c',
   grey: '#eeeeee',
   black: '#222222',
-  bordergrey: '#e4e4e4'
+  bordergrey: '#e4e4e4',
+  flexSet,
 };
 
 export const flexCenter = css`
@@ -39,4 +52,8 @@ export const flexColumnSpaceBetween = css`
 export const flexRow = css`
   display: flex;
   justify-content: center;
+`;
+
+export const displayNone = css`
+  display: none !important;
 `;

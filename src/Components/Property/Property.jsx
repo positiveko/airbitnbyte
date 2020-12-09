@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import styled from 'styled-components';
 import PropertyGallery from './PropertyGallery';
 import PropertyDetail from './PropertyDetail';
 import PropertyCalender from './PropertyCalender';
@@ -9,32 +11,17 @@ import PropertyReservation from './PropertyReservation';
 import PropertyOthers from './PropertyOthers';
 import PropertyHost from './PropertyHost';
 import { DETAIL_API, BOOKMARK_API } from '../../config';
+import { theme } from '../../styles/theme';
 import { MdStar } from 'react-icons/md';
 import { FaMedal } from 'react-icons/fa';
 import { FiShare2 } from 'react-icons/fi';
 import { BsHeart } from 'react-icons/bs';
 import { BsHeartFill } from 'react-icons/bs';
-import styled from 'styled-components';
-import { flexSet, theme } from '../../styles/theme';
-
-const isBrowser = typeof window !== `undefined`;
-
-function getScrollPosition({ element, useWindow }) {
-  if (!isBrowser) return { x: 0, y: 0 };
-
-  const target = element ? element.current : document.body;
-  const position = target.getBoundingClientRect();
-
-  return useWindow
-    ? { x: window.scrollX, y: window.scrollY }
-    : { x: position.left, y: position.top };
-}
 
 const ACCESS_TOKEN = localStorage.getItem('accessToken');
 
 const Property = (props) => {
   const [isBookmarked, setBookmarked] = useState(true);
-  const [propertyImages, setPropertyImages] = useState([]);
   const [property, setProperty] = useState({});
   const [focus, setFocus] = useState(null);
   const [focusedInput, setFocusedInput] = useState('startDate');
@@ -44,46 +31,37 @@ const Property = (props) => {
   });
   const { startDate, endDate } = dateRange;
 
+  const history = useHistory();
+
   const handleBookmark = (event) => {
     event.stopPropagation();
+    axios({
+      method: isBookmarked ? 'delete' : 'get',
+      headers: {
+        Authorization: ACCESS_TOKEN,
+      },
+      propertyId: property.propertyId,
+    });
     setBookmarked(!isBookmarked);
-
-    if (isBookmarked) {
-      axios
-        .post(BOOKMARK_API, {
-          headers: {
-            Authorization: ACCESS_TOKEN,
-          },
-          propertyId: property.propertyId,
-        })
-        .then(console.log('sendBookmark'));
-    } else {
-      axios
-        .delete(BOOKMARK_API, {
-          headers: {
-            Authorization: ACCESS_TOKEN,
-          },
-          propertyId: property.propertyId,
-        })
-        .then(console.log('deleteBookmark'));
-    }
   };
 
   useEffect(() => {
     axios
-      .get('/data/propertyImages.json')
-      .then(({ data: { image } }) => setPropertyImages(image));
-    axios
-      .get('/data/property.json')
-      // .get(DETAIL_API)
+      .get(`${DETAIL_API}`)
+      // .get(`${DETAIL_API}${props.match.params.id}`)
       .then(({ data: { result } }) => {
         setProperty(result);
         setBookmarked(result.isBookmarked);
       });
-  }, []);
+  }, [props.match.params.id]);
 
   const handleOnDateChange = ({ startDate, endDate }) => {
     setdateRange({ startDate, endDate });
+  };
+
+  const moveToDetailPage = (id) => {
+    history.push(`/property/${id}`);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -129,8 +107,8 @@ const Property = (props) => {
           </div>
         </div>
       </Header>
-      {propertyImages.length > 0 && (
-        <PropertyGallery propertyImages={propertyImages} />
+      {property.propertyImageslength > 0 && (
+        <PropertyGallery propertyImages={property.propertyImages} />
       )}
 
       <ParagraphContainer>
@@ -194,8 +172,8 @@ const Property = (props) => {
       {property.propertyId && (
         <PropertyOthers
           handleBookmark={handleBookmark}
-          otherProperties={property.moreProperties}
-
+          recommendedProperties={property.moreProperties}
+          moveToDetailPage={moveToDetailPage}
         />
       )}
     </PropertyWrapper>
@@ -205,7 +183,13 @@ const Property = (props) => {
 export default Property;
 
 const PropertyWrapper = styled.div`
-  ${flexSet('center', 'center', 'column')}
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+    });
+  }};
   margin-top: 120px;
   padding: 0 20px;
 
@@ -226,7 +210,12 @@ const Header = styled.header`
     margin-bottom: 30px;
   }
   .headerInfo {
-    ${flexSet('space-between', 'center')}
+    ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    });
+  }};
     font-size: 14px;
     .superhost,
     .propertyReviewNum {
