@@ -35,25 +35,35 @@ const Property = (props) => {
 
   const handleBookmark = (event) => {
     event.stopPropagation();
-    axios({
-      method: isBookmarked ? 'delete' : 'get',
+    axios(BOOKMARK_API, {
+      method: isBookmarked ? 'delete' : 'post',
       headers: {
         Authorization: ACCESS_TOKEN,
       },
-      propertyId: property.propertyId,
+      data: { propertyId: property.propertyId },
     });
     setBookmarked(!isBookmarked);
   };
 
   useEffect(() => {
     axios
-      .get(`${DETAIL_API}`)
-      // .get(`${DETAIL_API}${props.match.params.id}`)
+      // 서버 연결
+      .get(`${DETAIL_API}${props.match.params.id}`, {
+        headers: {
+          Authorization: ACCESS_TOKEN,
+        },
+      })
+      // Mock data 연결
+      // .get(DETAIL_API)
       .then(({ data: { result } }) => {
         setProperty(result);
         setBookmarked(result.isBookmarked);
       });
   }, [props.match.params.id]);
+
+  console.log(property.isBookmarked);
+
+  const { rules, safeties, rate } = property;
 
   const handleOnDateChange = ({ startDate, endDate }) => {
     setdateRange({ startDate, endDate });
@@ -71,16 +81,24 @@ const Property = (props) => {
         <div className='headerInfo'>
           <div className='headerInfoLeft'>
             <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }} />
-            <span className='propertyRate'>4.86</span>
+            {rate?.propertyRate && (
+              <span className='propertyRate'>
+                {Math.floor(rate.propertyRate * 100) / 100}
+              </span>
+            )}
             <span className='propertyReviewNum'>
               ({property.reviews?.length})
             </span>
-            <span className='superhost'>
-              <FaMedal color={theme.pink} style={{ marginRight: 5 }} />
-              슈퍼호스트
-            </span>
+            {property.isSupered ? (
+              <span className='superhost'>
+                <FaMedal color={theme.pink} style={{ marginRight: 5 }} />
+                슈퍼호스트
+              </span>
+            ) : (
+              ''
+            )}
             <span className='propertyLocation'>
-              제주시, 제주특별자치도, 한국
+              {property.district}, {property.province}, {property.country}
             </span>
           </div>
           <div className='headerInfoRight'>
@@ -107,13 +125,15 @@ const Property = (props) => {
           </div>
         </div>
       </Header>
-      {property.propertyImageslength > 0 && (
+      {property.propertyImages?.length > 0 && (
         <PropertyGallery propertyImages={property.propertyImages} />
       )}
 
       <ParagraphContainer>
         <div className='propertyLeft'>
-          <PropertyDetail />
+          {property.sizes !== undefined && (
+            <PropertyDetail property={property} />
+          )}
           <PropertyCalender
             setFocusedInput={setFocusedInput}
             focusedInput={focusedInput}
@@ -134,34 +154,36 @@ const Property = (props) => {
           />
         </div>
       </ParagraphContainer>
-      {property.propertyId && <PropertyReview reviews={property.reviews} />}
+      {property.propertyId && (
+        <PropertyReview rate={property.rate} reviews={property.reviews} />
+      )}
       {property.propertyId && <PropertyMap property={property} />}
-      <PropertyHost />
+      <PropertyHost property={property} />
       <PropertyFooter>
         <div className='propertyFooterTitle title'>알아두어야 할 사항</div>
         <div className='gridBox'>
           <div className='footerRule'>
             <p className='subtitle'>숙소 이용규칙</p>
-            <p>체크인 시간: 오후 3:00 이후</p>
-            <p>흡연 금지</p>
-            <p>반려동물 동반 가능</p>
+            <p>{rules ? rules[0] : ''}</p>
+            <p>{rules ? rules[1] : ''}</p>
+            <p>{rules ? rules[2] : ''}</p>
           </div>
           <div className='footerSafety'>
             <p className='subtitle'>건강과 안전</p>
             <p>
-              에어비트앤바이트의 강화된 청소 절차 준수에 동의했습니다.{' '}
+              {safeties ? safeties[0] : ''}
               <b>자세히 알아보기</b>
             </p>
             <p>
               에이비트앤바이트의 사회적 거리 두기 및 관련 가이드라인이
               적용됩니다.
             </p>
-            <p>일산화탄소 경보기</p>
-            <p>화재경보기</p>
+            <p>{safeties ? safeties[1] : ''}</p>
+            <p>{safeties ? safeties[2] : ''}</p>
           </div>
           <div className='footerRefund'>
             <p className='subtitle'>환불 정책</p>
-            <p>체크인 24시간 전까지 수수료 없이 예약 취소 가능</p>
+            <p>{property.rufund}</p>
             <p>
               그 이후로는 체크인 전에 취소하면 첫 1박 요금과 서비스 수수료를
               제외한 전액이 환불됩니다. <b>자세히 알아보기</b>
@@ -211,11 +233,11 @@ const Header = styled.header`
   }
   .headerInfo {
     ${({ theme }) => {
-    return theme.flexSet({
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    });
-  }};
+      return theme.flexSet({
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      });
+    }};
     font-size: 14px;
     .superhost,
     .propertyReviewNum {

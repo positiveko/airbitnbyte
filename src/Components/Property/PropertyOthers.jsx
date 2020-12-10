@@ -18,15 +18,15 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
   const handleBookmark = (event, property) => {
     event.stopPropagation();
     const tmpNewRecommendedProperties = [...newRecommendedProperties];
-    const idx = tmpNewRecommendedProperties.find(property);
+    const idx = tmpNewRecommendedProperties.indexOf(property);
     tmpNewRecommendedProperties[idx].isBookmarked = !property.isBookmarked;
 
-    axios({
-      method: tmpNewRecommendedProperties[idx].isBookmarked ? 'delete' : 'get',
+    axios(BOOKMARK_API, {
+      method: tmpNewRecommendedProperties[idx].isBookmarked ? 'delete' : 'post',
       headers: {
         Authorization: ACCESS_TOKEN,
       },
-      propertyId: property.propertyId,
+      data: { propertyId: property.propertyId },
     });
     setNewOtherProperties(tmpNewRecommendedProperties);
   };
@@ -103,7 +103,7 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
                 onClick={() => moveToDetailPage(property.propertyId)}>
                 <div className='pictureBox'>
                   <img src={property.propertyImage[0]} alt='other property' />
-                  {property.is_super && <i>슈퍼호스트</i>}
+                  {property.isSuper && <i>슈퍼호스트</i>}
                   <button
                     id={property.propertyId}
                     onClick={(e) => handleBookmark(e, property)}>
@@ -115,7 +115,8 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
                   </button>
                 </div>
                 <p className='propertyRate'>
-                  <MdStar color={theme.pink} size={20} /> 4.81(21)
+                  <MdStar color={theme.pink} size={20} /> 4.81(
+                  {Math.floor(Math.random() * 300)})
                 </p>
                 <p className='propertyInfo'>{property.sizes[0].sizeContent}</p>
                 <p className='propertyName'>{property.propertyName}</p>
@@ -207,7 +208,7 @@ const OtherProperties = styled.div`
           width: 270px;
           height: 180px;
           overflow: hidden;
-          margin-bottom: 15px;
+          margin-bottom: 10px;
 
           img {
             object-fit: cover;
@@ -258,7 +259,7 @@ const OtherProperties = styled.div`
           }
         }
         p {
-          margin-bottom: 5px;
+          margin-bottom: 7px;
         }
         .propertyName {
           overflow: hidden;

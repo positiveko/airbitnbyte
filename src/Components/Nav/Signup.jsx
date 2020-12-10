@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, logout } from '../../store/actions';
 import axios from 'axios';
 import Fade from 'react-reveal/Fade';
 import styled from 'styled-components';
@@ -11,10 +13,20 @@ import { FcGoogle } from 'react-icons/fc';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GoMail } from 'react-icons/go';
 
-const Signup = ({ authService }) => {
+const token = 'token';
+
+const Signup = ({ authService, isSignupModalOn, setSignupModalOn }) => {
   const [isEmailSignup, setEmailSignup] = useState(false);
   const [isLoginModalOn, setLoginModal] = useState(false);
-  const [isSignupModalOn, setSignupModalOn] = useState(true);
+
+  const loginState = useSelector((store) => store.loginReducer);
+  const dispatch = useDispatch();
+
+  const saveToken = () => {
+    dispatch(login(token));
+    alert('토큰이 저장되었습니다.');
+    console.log(loginState);
+  };
 
   const closeModalAll = () => {
     setSignupModalOn(false);
@@ -27,6 +39,7 @@ const Signup = ({ authService }) => {
   };
 
   const openLoginModal = () => {
+    saveToken();
     setLoginModal(!isLoginModalOn);
     setEmailSignup(false);
   };
@@ -41,9 +54,8 @@ const Signup = ({ authService }) => {
       },
     })
       .then((res) => {
-        if (res.data.result) {
-          localStorage.setItem('token', res.data.result.accessToken);
-        }
+        localStorage.setItem('accessToken', res.data.accessToken);
+        console.log(res);
       })
       .catch((err) => console.log(err));
   };
@@ -144,10 +156,10 @@ const SignupModal = styled.div`
 
     .modalHeader {
       ${({ theme }) => {
-      return theme.flexSet({
-        flexDirection: 'row'
-      });
-    }};
+        return theme.flexSet({
+          flexDirection: 'row',
+        });
+      }};
       align-items: center;
       position: relative;
       width: 568px;

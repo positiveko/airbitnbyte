@@ -23,9 +23,8 @@ const Login = ({ onGoogleLogin, openLoginModal, closeModalAll }) => {
         password: userLoginInfo.password,
       })
       .then((res) => {
-        if (res.data.result) {
-          localStorage.setItem('token', res.data.result.accessToken);
-        }
+        console.log(res.data.accessToken);
+        localStorage.setItem('token', res.data.accessToken);
       })
       .catch((res) => {
         console.log(res);

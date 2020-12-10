@@ -18,7 +18,7 @@ const PropertyGallery = ({ propertyImages }) => {
   return (
     <>
       <PropertyGalleryBox>
-        {propertyImages.map((image, idx) => (
+        {propertyImages.slice(0, 5).map((image, idx) => (
           <div key={idx} className='imgWrapper'>
             <img src={image} alt={`property ${idx}`} />
           </div>
@@ -58,7 +58,7 @@ const PropertyGalleryBox = styled.section`
     }
     overflow: hidden;
     img {
-      object-fit: fill;
+      object-fit: cover;
       height: 100%;
       width: 100%;
       transition: 0.2s;

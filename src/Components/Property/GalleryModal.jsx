@@ -36,10 +36,10 @@ const GalleryModal = ({ closeGalleryModal, propertyImages }) => {
             </button>
           </div>
           <Slider {...settings}>
-            {propertyImages.map((image) => {
+            {propertyImages.map((image, idx) => {
               return (
-                <div key={image.id} className='imgWrapper'>
-                  <img src={image.src} alt={`property ${image.id}`} />
+                <div key={idx} className='imgWrapper'>
+                  <img src={image} alt={`property ${idx}`} />
                 </div>
               );
             })}
@@ -76,13 +76,13 @@ const GalleryModalBox = styled.div`
     .imgWrapper {
       width: 800px;
       height: 600px;
-      /* overflow: hidden; */
     }
-    
+
     img {
       object-fit: cover;
       height: 100%;
       width: 100%;
+      border-radius: 20px;
       transition: 0.2s;
       transition-timing-function: ease-in-out;
       &:hover {
@@ -95,9 +95,7 @@ const GalleryModalBox = styled.div`
     .slick-dots {
       top: 620px;
     }
-
   }
-
 `;
 
 export default GalleryModal;

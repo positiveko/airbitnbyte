@@ -40,7 +40,7 @@ const Nav = ({ authService }) => {
         <div className='bitAandByteIcon'>
           <img
             className='logoImg'
-            src='images/airBnBlogo.svg'
+            src='/images/airBnBlogo.svg'
             alt='로고 이미지'
           />
         </div>
@@ -75,7 +75,7 @@ const Nav = ({ authService }) => {
         <NavUserInfo onClick={openSignup}>
           <GiHamburgerMenu className='hameburgerIcon' />
           <div className='ImageBorder'>
-            <img src='images/defaultProfile.png' alt='프로파일이미지' />
+            <img src='/images/defaultProfile.png' alt='프로파일이미지' />
           </div>
         </NavUserInfo>
       </NavComponent>
@@ -124,8 +124,13 @@ const NavComponent = styled.header`
   }
 
   .searchForm {
-    ${flexColumnCenter}
-    position : relative;
+    ${({ theme }) => {
+      return theme.flexSet({
+        alignItems: 'center',
+        flexDirection: 'column',
+      });
+    }};
+    position: relative;
   }
 `;
 
