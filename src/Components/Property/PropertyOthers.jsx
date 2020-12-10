@@ -84,6 +84,8 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
     sliderRef.current.slickNext();
   };
 
+  console.log(recommendedProperties);
+
   return (
     <OtherProperties>
       <section>
@@ -119,8 +121,9 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
                   </button>
                 </div>
                 <p className='propertyRate'>
-                  <MdStar color={theme.pink} size={20} /> 4.81(
-                  {Math.floor(Math.random() * 300)})
+                  <MdStar color={theme.pink} size={20} />{' '}
+                  {Number(Math.random() * 5).toFixed(2)}
+                  <span>({Math.floor(Math.random() * 300)})</span>
                 </p>
                 <p className='propertyInfo'>{property.sizes[0].sizeContent}</p>
                 <p className='propertyName'>{property.propertyName}</p>
@@ -261,6 +264,10 @@ const OtherProperties = styled.div`
             padding: 0px;
             margin-bottom: -3px;
           }
+          span {
+            margin-left: 4px;
+            color: grey;
+          }
         }
         p {
           margin-bottom: 7px;
@@ -271,7 +278,7 @@ const OtherProperties = styled.div`
           text-overflow: ellipsis;
         }
         b {
-          font-weight: 600;
+          font-weight: 500;
         }
       }
     }

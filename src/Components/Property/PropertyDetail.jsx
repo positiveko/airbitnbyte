@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { theme } from '../../styles/theme';
 import { BsCalendar, BsBook } from 'react-icons/bs';
 import { BiBed, BiDoorOpen } from 'react-icons/bi';
 import { ImSpoonKnife } from 'react-icons/im';
 import { MdFreeBreakfast } from 'react-icons/md';
 import { AiOutlineWifi, AiOutlineLaptop } from 'react-icons/ai';
 import { RiTShirtAirLine, RiMedal2Line, RiMoonClearLine } from 'react-icons/ri';
+import { FaMedal } from 'react-icons/fa';
 
 const PropertyDetail = ({ property, property: { sizes } }) => {
   return (
@@ -22,10 +24,15 @@ const PropertyDetail = ({ property, property: { sizes } }) => {
         </div>
         <div className='detailRight'>
           <img
-            src='/images/hostProfile.jpg'
+            src='/images/defaultProfile.png'
             alt='host profile'
             className='hostProfile'
           />
+          {property.isSupered ? (
+            <FaMedal color={theme.pink} style={{ marginRight: 7 }} />
+          ) : (
+            ''
+          )}
         </div>
       </div>
 
@@ -146,6 +153,7 @@ const PropertyDetailBox = styled.div`
 
   .title {
     font-size: 22px;
+    margin-bottom: 15px;
   }
 
   .propertyDetailHeader {
@@ -161,9 +169,20 @@ const PropertyDetailBox = styled.div`
       margin-top: 7px;
     }
 
-    img {
-      border-radius: 50%;
-      width: 56px;
+    .detailRight {
+      position: relative;
+      img {
+        border-radius: 50%;
+        width: 56px;
+      }
+      svg {
+        position: absolute;
+        top: 5px;
+        right: -8px;
+        background-color: white;
+        border: 1px solid #707070;
+        border-radius: 50%;
+      }
     }
   }
 `;
@@ -257,6 +276,8 @@ const Accomodations = styled.div`
   }
   svg {
     margin-right: 10px;
+    padding-top: 5ps;
+    margin-bottom: -5px;
   }
 `;
 

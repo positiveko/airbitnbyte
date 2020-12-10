@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Slider from 'react-slick';
+import Fade from 'react-reveal/Fade';
 import styled from 'styled-components';
 import { BiArrowBack } from 'react-icons/bi';
 
@@ -29,28 +30,36 @@ const GalleryModal = ({ closeGalleryModal, propertyImages }) => {
   return (
     <>
       <GalleryModalBox>
-        <div className='imgBox'>
-          <div className='modalHeader'>
-            <button className='xBtn' onClick={closeGalleryModal}>
-              <BiArrowBack size={25} />
-            </button>
+        <Fade bottom>
+          <div className='imgBox'>
+            <div className='modalHeader'>
+              <button className='xBtn' onClick={closeGalleryModal}>
+                <BiArrowBack size={25} />
+              </button>
+            </div>
+            <Slider {...settings}>
+              {propertyImages.map((image, idx) => {
+                return (
+                  <div key={idx} className='imgWrapper'>
+                    <img src={image} alt={`property ${idx}`} />
+                  </div>
+                );
+              })}
+            </Slider>
           </div>
-          <Slider {...settings}>
-            {propertyImages.map((image, idx) => {
-              return (
-                <div key={idx} className='imgWrapper'>
-                  <img src={image} alt={`property ${idx}`} />
-                </div>
-              );
-            })}
-          </Slider>
-        </div>
+        </Fade>
       </GalleryModalBox>
     </>
   );
 };
 
 const GalleryModalBox = styled.div`
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+    });
+  }};
   position: fixed;
   top: 0;
   left: 0;
@@ -66,12 +75,8 @@ const GalleryModalBox = styled.div`
   }
 
   .imgBox {
-    position: absolute;
     width: 900px;
     height: 700px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
 
     .imgWrapper {
       width: 800px;

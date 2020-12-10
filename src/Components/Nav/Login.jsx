@@ -102,9 +102,12 @@ const Login = ({ onGoogleLogin, openLoginModal, closeModalAll }) => {
 export default Login;
 
 const LoginModal = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+    });
+  }};
   position: fixed;
   top: 0;
   left: 0;

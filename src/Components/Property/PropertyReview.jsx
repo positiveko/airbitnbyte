@@ -36,7 +36,7 @@ const PropertyReview = ({ reviews, rate }) => {
       <PropertyReviewBox>
         <div className='propertyRate'>
           <div className='averageRate'>
-            <MdStar color={theme.pink} size={20} />
+            <MdStar color={theme.pink} size={25} />
             {Math.floor(rate?.propertyRate * 100) / 100}점 (후기{' '}
             {reviews.length}
             개)
@@ -54,7 +54,7 @@ const PropertyReview = ({ reviews, rate }) => {
                   />
                   {rate && (
                     <div className='rate'>
-                      {Math.floor(rate[criteria.key] * 100) / 100}
+                      {Number(rate[criteria.key]).toFixed(2)}
                     </div>
                   )}
                 </div>
@@ -106,17 +106,19 @@ const PropertyReviewBox = styled.div`
 
     svg {
       padding-top: 5px;
-      margin: 0 8px -3px 0;
+      margin: 0 3px -3px 0;
     }
   }
   .rateBox {
     margin: 30px 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+
     .barContainer {
       display: flex;
       justify-content: space-between;
       margin: 5px 0 15px 0;
+
       .criteria {
         font-size: 16px;
         font-weight: 400;
@@ -124,6 +126,7 @@ const PropertyReviewBox = styled.div`
       .flexCon {
         display: flex;
         align-items: center;
+
         progress {
           appearance: none;
           display: block;
@@ -139,7 +142,7 @@ const PropertyReviewBox = styled.div`
           border-radius: 3px;
         }
         .rate {
-          margin: 0 60px 0 10px;
+          margin: 0 70px 0 10px;
           font-size: 13px;
           font-weight: 600;
         }
@@ -152,17 +155,21 @@ const PropertyReviewBox = styled.div`
     grid-template-columns: 1fr 1fr;
     margin: 20px 0 40px 0;
     overflow: auto;
+
     .review {
       width: 460px;
-      margin-bottom: 10px;
+      margin-bottom: 30px;
+
       .reviewerBox {
         display: flex;
         margin-bottom: 10px;
+
         .reviewerProfile {
           width: 56px;
           height: 56px;
           border-radius: 50%;
           overflow: hidden;
+
           img {
             width: 100%;
             height: 100%;
@@ -171,6 +178,7 @@ const PropertyReviewBox = styled.div`
         }
         .flexRight {
           margin: 10px;
+
           .reviewerName {
             font-weight: 500;
             margin-bottom: 5px;

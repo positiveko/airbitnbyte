@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import PropertyGallery from './PropertyGallery';
 import PropertyDetail from './PropertyDetail';
 import PropertyCalender from './PropertyCalender';
@@ -30,7 +29,6 @@ const Property = (props) => {
     startDate: null,
     endDate: null,
   });
-  // const loginState = useSelector((store) => store.loginReducer);
 
   const { startDate, endDate } = dateRange;
 
@@ -81,11 +79,15 @@ const Property = (props) => {
   if (isLoading) {
     return (
       <PropertyWrapper>
-        <Header>
-          <div className='propertyTitle'>{property.propertyName}</div>
+        <Header isLoading={isLoading}>
+          <div className='propertyTitle'>
+            {property.propertyName}
+            <Skeleton isLoading={isLoading} />
+          </div>
           <div className='headerInfo'>
             <div className='headerInfoLeft'>
-              <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }} />
+              <Skeleton isLoading={isLoading} />
+              <MdStar size={20} style={{ marginRight: 5 }} />
               {rate?.propertyRate && (
                 <span className='propertyRate'>
                   {Math.floor(rate.propertyRate * 100) / 100}
@@ -96,7 +98,7 @@ const Property = (props) => {
               </span>
               {property.isSupered ? (
                 <span className='superhost'>
-                  <FaMedal color={theme.pink} style={{ marginRight: 5 }} />
+                  <FaMedal style={{ marginRight: 5 }} />
                   슈퍼호스트
                 </span>
               ) : (
@@ -108,22 +110,16 @@ const Property = (props) => {
             </div>
             <div className='headerInfoRight'>
               <button className='shareBtn'>
+                <Skeleton isLoading={isLoading} />
                 <FiShare2 size={15} style={{ marginRight: 5 }} />
                 공유하기
               </button>
               <button className='BookmarkBtn' onClick={handleBookmark}>
+                <Skeleton isLoading={isLoading} />
                 {isBookmarked ? (
-                  <BsHeartFill
-                    color={theme.pink}
-                    size={15}
-                    style={{ marginRight: 5 }}
-                  />
+                  <BsHeartFill size={15} style={{ marginRight: 5 }} />
                 ) : (
-                  <BsHeart
-                    color={theme.pink}
-                    size={15}
-                    style={{ marginRight: 5 }}
-                  />
+                  <BsHeart size={15} style={{ marginRight: 5 }} />
                 )}
                 저장
               </button>
@@ -142,11 +138,11 @@ const Property = (props) => {
 
   return (
     <PropertyWrapper>
-      <Header>
+      <Header isLoading={isLoading}>
         <div className='propertyTitle'>{property.propertyName}</div>
         <div className='headerInfo'>
           <div className='headerInfoLeft'>
-            <MdStar color={theme.pink} size={20} style={{ marginRight: 5 }} />
+            <MdStar size={20} style={{ marginRight: 5 }} />
             {rate?.propertyRate && (
               <span className='propertyRate'>
                 {Math.floor(rate.propertyRate * 100) / 100}
@@ -157,7 +153,7 @@ const Property = (props) => {
             </span>
             {property.isSupered ? (
               <span className='superhost'>
-                <FaMedal color={theme.pink} style={{ marginRight: 5 }} />
+                <FaMedal style={{ marginRight: 5 }} />
                 슈퍼호스트
               </span>
             ) : (
@@ -274,6 +270,18 @@ const Property = (props) => {
 
 export default Property;
 
+const loading = keyframes` 
+  0% {
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.3;
+  }
+  100% {
+    opacity : 1;
+  }
+  `;
+
 const PropertyWrapper = styled.div`
   ${({ theme }) => {
     return theme.flexSet({
@@ -294,13 +302,17 @@ const PropertyWrapper = styled.div`
 const Header = styled.header`
   max-width: 1130px;
   width: 100%;
-  height: 90px;
+  height: 60px;
 
   .propertyTitle {
+    position: relative;
     font-size: 26px;
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    width: 500px;
+    color: ${(props) => (props.isLoading ? 'transparent' : 'black')};
   }
+
   .headerInfo {
     ${({ theme }) => {
       return theme.flexSet({
@@ -308,29 +320,57 @@ const Header = styled.header`
         alignItems: 'center',
       });
     }};
-    font-size: 14px;
-    .superhost,
-    .propertyReviewNum {
-      color: #8f8f8f;
-      &::after {
-        content: '·';
-        margin: 0 7px;
+    font-size: 16px;
+
+    .headerInfoLeft {
+      position: relative;
+
+      svg {
+        margin-bottom: -3px;
+        color: ${(props) => (props.isLoading ? 'transparent' : '#ff3a5c')};
+      }
+
+      .propertyRate {
+        font-weight: 500;
+        color: ${(props) => (props.isLoading ? 'transparent' : 'black')};
+      }
+
+      .superhost,
+      .propertyReviewNum {
+        color: ${(props) => (props.isLoading ? 'transparent' : '#8f8f8f')};
+
+        &::after {
+          content: '·';
+          margin: 0 7px;
+        }
+      }
+      .propertyLocation {
+        color: ${(props) => (props.isLoading ? 'transparent' : 'black')};
+        text-decoration: underline;
+      }
+      .propertyReviewNum {
+        margin-left: 3px;
       }
     }
-    .propertyLocation {
-      text-decoration: underline;
-    }
+
     button {
+      position: relative;
       width: 90px;
-      height: 36px;
+      height: 30px;
+      margin-left: 10px;
       border-radius: 10px;
       background-color: #fff;
       text-decoration: underline;
+      color: ${(props) => (props.isLoading ? 'transparent' : 'black')};
+
       &:hover {
         background-color: #f1f1f1;
       }
       svg {
         margin-bottom: -3px;
+        &::nth-child(2) {
+          color: ${theme.pink};
+        }
       }
     }
   }
@@ -383,4 +423,15 @@ const PropertyFooter = styled.div`
     .footerSafety {
     }
   }
+`;
+
+const Skeleton = styled.div`
+  background-color: #bdbdbd;
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  bottom: 0px;
+  border-radius: 5px;
+  animation: ${loading} 2.5s ease-in-out alternate;
 `;

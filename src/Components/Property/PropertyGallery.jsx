@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import GalleryModal from './GalleryModal';
 import { theme } from '../../styles/theme';
 import { BsGrid3X3Gap } from 'react-icons/bs';
@@ -17,7 +17,7 @@ const PropertyGallery = ({ propertyImages, isLoading }) => {
 
   return (
     <>
-      <PropertyGalleryBox>
+      <PropertyGalleryBox isLoading={isLoading}>
         {propertyImages.slice(0, 5).map((image, idx) => (
           <ImgWrapper key={idx} isLoading={isLoading}>
             <img src={image} alt={`property ${idx}`} />
@@ -45,14 +45,14 @@ const PropertyGalleryBox = styled.section`
   grid-gap: 10px;
   width: 100%;
   max-width: 1130px;
-  height: 100%;
-  max-height: 600px;
-  margin: 30px 0;
+  height: 500px;
+  margin: 20px 0;
   border-radius: 20px;
   overflow: hidden;
   div {
   }
   .galleryModalBtn {
+    display: ${(props) => (props.isLoading ? 'none' : 'block')};
     position: absolute;
     bottom: 20px;
     right: 20px;
@@ -79,8 +79,8 @@ const loading = keyframes`
   100% {
     opacity : 1;
   }
-
 `;
+
 const ImgWrapper = styled.div`
   position: relative;
   background-color: ${(props) => (props.isLoading ? '#bdbdbd' : 'transparent')};
