@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
@@ -15,14 +16,17 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
     recommendedProperties
   );
 
+  const loginState = useSelector((store) => store.loginReducer);
+
   const handleBookmark = (event, property) => {
     event.stopPropagation();
     const tmpNewRecommendedProperties = [...newRecommendedProperties];
     const idx = tmpNewRecommendedProperties.indexOf(property);
     tmpNewRecommendedProperties[idx].isBookmarked = !property.isBookmarked;
+    console.log(property.propertyId);
 
     axios(BOOKMARK_API, {
-      method: tmpNewRecommendedProperties[idx].isBookmarked ? 'delete' : 'post',
+      method: tmpNewRecommendedProperties[idx].isBookmarked ? 'post' : 'delete',
       headers: {
         Authorization: ACCESS_TOKEN,
       },
@@ -103,7 +107,7 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
                 onClick={() => moveToDetailPage(property.propertyId)}>
                 <div className='pictureBox'>
                   <img src={property.propertyImage[0]} alt='other property' />
-                  {property.isSuper && <i>슈퍼호스트</i>}
+                  {property.isSupered && <i>슈퍼호스트</i>}
                   <button
                     id={property.propertyId}
                     onClick={(e) => handleBookmark(e, property)}>

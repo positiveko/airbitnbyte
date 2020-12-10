@@ -37,7 +37,8 @@ const PropertyReview = ({ reviews, rate }) => {
         <div className='propertyRate'>
           <div className='averageRate'>
             <MdStar color={theme.pink} size={20} />
-            {Math.floor(rate.propertyRate * 100) / 100}점 (후기 {reviews.length}
+            {Math.floor(rate?.propertyRate * 100) / 100}점 (후기{' '}
+            {reviews.length}
             개)
           </div>
 

@@ -16,7 +16,7 @@ const PropertyDetail = ({ property, property: { sizes } }) => {
             {property.hostName}님이 호스팅하는 주택의 개인실
           </div>
           <div className='titleInfo'>
-            최대 인원 {property.capacity}명 ・ {sizes[0].sizeNmae} ・
+            최대 인원 {property.capacity}명 ・ {sizes[0].sizeName} ・
             {sizes[0].sizeContent} ・ 공동 사용 욕실 2개
           </div>
         </div>
@@ -68,7 +68,7 @@ const PropertyDetail = ({ property, property: { sizes } }) => {
           <div className='defaultInfoRight'>
             <div className='defaultInfoTitle'>환불 정책</div>
             <div className='defaultInfodetail'>
-              {property.rufund} <span>자세히 보기</span>
+              {property.refund} <span>자세히 보기</span>
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@ const PropertyDetail = ({ property, property: { sizes } }) => {
             <BiBed size={30} />
             <BiBed size={30} />
           </div>
-          <div className='bold'> {sizes[0].sizeNmae}</div>
+          <div className='bold'> {sizes[0].sizeName}</div>
           <div> {sizes[0].sizeContent}</div>
         </div>
       </BedInfo>

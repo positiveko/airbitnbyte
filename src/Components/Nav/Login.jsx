@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../../store/actions';
 import axios from 'axios';
 import Fade from 'react-reveal/Fade';
 import styled from 'styled-components';
@@ -10,6 +12,16 @@ import { RiKakaoTalkFill } from 'react-icons/ri';
 const Login = ({ onGoogleLogin, openLoginModal, closeModalAll }) => {
   const [userLoginInfo, setUserLoginInfo] = useState({});
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+
+  const loginState = useSelector((store) => store.loginReducer);
+  const dispatch = useDispatch();
+
+  const saveToken = (accessToken) => {
+    dispatch(login(accessToken));
+    localStorage.setItem('accessToken', accessToken);
+    alert('로그인 되었습니다.');
+    console.log(loginState);
+  };
 
   const handleInput = (e) => {
     const { value, name } = e.target;
@@ -24,7 +36,7 @@ const Login = ({ onGoogleLogin, openLoginModal, closeModalAll }) => {
       })
       .then((res) => {
         console.log(res.data.accessToken);
-        localStorage.setItem('token', res.data.accessToken);
+        saveToken(res.data.accessToken);
       })
       .catch((res) => {
         console.log(res);
@@ -112,11 +124,12 @@ const LoginModal = styled.div`
 
 const ModalContainer = styled.div`
   ${({ theme }) => {
-      return theme.flexSet({
-        alignItems: 'center',
-        flexDirection: 'column'
-      });
-    }};
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+    });
+  }};
   width: 570px;
   background-color: white;
   padding: 0 20px;
@@ -128,10 +141,11 @@ const ModalContainer = styled.div`
   .modalHeader {
     ${({ theme }) => {
       return theme.flexSet({
-        flexDirection: 'row'
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
       });
     }};
-    align-items: center;
     position: relative;
     width: 568px;
     height: 64px;

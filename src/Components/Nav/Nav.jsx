@@ -1,18 +1,15 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../store/actions';
 import styled, { css } from 'styled-components';
 import NavSearchInfo from './NavSearchInfo.jsx';
+import Signup from './Signup.jsx';
 import { BiSearch } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import {
-  theme,
-  flexSet,
-  flexCenter,
-  flexColumnCenter,
-} from '../../styles/theme';
-import Signup from './Signup.jsx';
+import { theme } from '../../styles/theme';
 
 const Nav = ({ authService }) => {
-  const [scrollYdata, setScrollYdata] = useState(1);
+  const [scrollYdata, setScrollYdata] = useState(0);
   const [searchType, setsearchType] = useState('rooms');
   const [foldNav, setfoldNav] = useState(false);
   const [isSignupModalOn, setSignupModalOn] = useState(false);
@@ -21,9 +18,18 @@ const Nav = ({ authService }) => {
     setSignupModalOn(!isSignupModalOn);
   };
 
+  const loginState = useSelector((store) => store.loginReducer);
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem('accessToken');
+    alert('로그아웃 되었습니다');
+  };
+
   useLayoutEffect(() => {
     const getPostion = () => {
-      // window.scrollY ? setScrollYdata(window.scrollY) : setScrollYdata(0);
+      window.scrollY ? setScrollYdata(window.scrollY) : setScrollYdata(0);
       setfoldNav(false);
     };
     window.addEventListener('scroll', getPostion);
@@ -72,7 +78,8 @@ const Nav = ({ authService }) => {
             <NavSearchInfo type={searchType} />
           </NavSearchVar>
         </div>
-        <NavUserInfo onClick={openSignup}>
+        <NavUserInfo
+          onClick={loginState.accessToken ? handleLogout : openSignup}>
           <GiHamburgerMenu className='hameburgerIcon' />
           <div className='ImageBorder'>
             <img src='/images/defaultProfile.png' alt='프로파일이미지' />
@@ -153,8 +160,13 @@ const NavSearchVar = styled.div`
 `;
 
 const NavSearchTheme = styled.div`
-  ${flexSet('center', 'center')}
-  margin-bottom:20px;
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+    });
+  }};
+  margin-bottom: 20px;
 
   span {
     position: relative;
@@ -220,15 +232,25 @@ const SearcBox = styled.div`
 `;
 
 const SearchIcon = styled.div`
-  ${flexCenter}
-  width : ${(props) => `${props.isSize}px`};
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+    });
+  }};
+  width: ${(props) => `${props.isSize}px`};
   height: ${(props) => `${props.isSize}px`};
   border-radius: 50%;
   background-color: ${theme.pink};
 `;
 
 const NavUserInfo = styled.div`
-  ${flexCenter};
+  ${({ theme }) => {
+    return theme.flexSet({
+      justifyContent: 'center',
+      alignItems: 'center',
+    });
+  }};
   height: 50px;
   padding: 0 10px;
   border: 1px solid #dddddd;
@@ -248,7 +270,12 @@ const NavUserInfo = styled.div`
   }
 
   .ImageBorder {
-    ${flexCenter};
+    ${({ theme }) => {
+      return theme.flexSet({
+        justifyContent: 'center',
+        alignItems: 'center',
+      });
+    }};
     height: 100%;
 
     img {

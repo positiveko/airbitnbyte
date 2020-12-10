@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import GalleryModal from './GalleryModal';
 import { theme } from '../../styles/theme';
 import { BsGrid3X3Gap } from 'react-icons/bs';
 
-const PropertyGallery = ({ propertyImages }) => {
+const PropertyGallery = ({ propertyImages, isLoading }) => {
   const [isGalleryModalOn, toggleGalleryModalOn] = useState(false);
 
   const handleGalleryModal = useCallback(() => {
@@ -19,9 +19,9 @@ const PropertyGallery = ({ propertyImages }) => {
     <>
       <PropertyGalleryBox>
         {propertyImages.slice(0, 5).map((image, idx) => (
-          <div key={idx} className='imgWrapper'>
+          <ImgWrapper key={idx} isLoading={isLoading}>
             <img src={image} alt={`property ${idx}`} />
-          </div>
+          </ImgWrapper>
         ))}
         <button className='galleryModalBtn' onClick={handleGalleryModal}>
           <BsGrid3X3Gap /> 사진 모두 보기
@@ -51,22 +51,6 @@ const PropertyGalleryBox = styled.section`
   border-radius: 20px;
   overflow: hidden;
   div {
-    height: 100%;
-    width: 100%;
-    &:nth-child(1) {
-      grid-area: 1 / 1 / span 2 / span 2;
-    }
-    overflow: hidden;
-    img {
-      object-fit: cover;
-      height: 100%;
-      width: 100%;
-      transition: 0.2s;
-      transition-timing-function: ease-in-out;
-      &:hover {
-        filter: brightness(80%);
-      }
-    }
   }
   .galleryModalBtn {
     position: absolute;
@@ -81,6 +65,41 @@ const PropertyGalleryBox = styled.section`
     font-size: 14px;
     svg {
       margin-bottom: -3px;
+    }
+  }
+`;
+
+const loading = keyframes` 
+  0% {
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.3;
+  }
+  100% {
+    opacity : 1;
+  }
+
+`;
+const ImgWrapper = styled.div`
+  position: relative;
+  background-color: ${(props) => (props.isLoading ? '#bdbdbd' : 'transparent')};
+  animation: ${loading} 2.5s ease-in-out alternate;
+  height: 100%;
+  width: 100%;
+  &:nth-child(1) {
+    grid-area: 1 / 1 / span 2 / span 2;
+  }
+  overflow: hidden;
+  img {
+    opacity: ${(props) => (props.isLoading ? 0 : 1)};
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+    &:hover {
+      filter: brightness(80%);
     }
   }
 `;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { login, logout } from '../../store/actions';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/actions';
 import axios from 'axios';
 import Fade from 'react-reveal/Fade';
 import styled from 'styled-components';
@@ -13,20 +13,9 @@ import { FcGoogle } from 'react-icons/fc';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GoMail } from 'react-icons/go';
 
-const token = 'token';
-
 const Signup = ({ authService, isSignupModalOn, setSignupModalOn }) => {
   const [isEmailSignup, setEmailSignup] = useState(false);
   const [isLoginModalOn, setLoginModal] = useState(false);
-
-  const loginState = useSelector((store) => store.loginReducer);
-  const dispatch = useDispatch();
-
-  const saveToken = () => {
-    dispatch(login(token));
-    alert('토큰이 저장되었습니다.');
-    console.log(loginState);
-  };
 
   const closeModalAll = () => {
     setSignupModalOn(false);
@@ -39,9 +28,15 @@ const Signup = ({ authService, isSignupModalOn, setSignupModalOn }) => {
   };
 
   const openLoginModal = () => {
-    saveToken();
     setLoginModal(!isLoginModalOn);
     setEmailSignup(false);
+  };
+
+  const dispatch = useDispatch();
+  const saveToken = (accessToken) => {
+    dispatch(login(accessToken));
+    localStorage.setItem('accessToken', accessToken);
+    alert('로그인 되었습니다.');
   };
 
   const sendGoogleUser = (token) => {
@@ -54,8 +49,12 @@ const Signup = ({ authService, isSignupModalOn, setSignupModalOn }) => {
       },
     })
       .then((res) => {
-        localStorage.setItem('accessToken', res.data.accessToken);
+        saveToken(res.data.accessToken);
         console.log(res);
+      })
+      .then(() => {
+        setLoginModal(false);
+        setSignupModalOn(false);
       })
       .catch((err) => console.log(err));
   };
@@ -142,6 +141,7 @@ const SignupModal = styled.div`
     ${({ theme }) => {
       return theme.flexSet({
         justifyContent: 'center',
+        alignItems: 'center',
         flexDirection: 'column',
       });
     }};
@@ -157,6 +157,7 @@ const SignupModal = styled.div`
     .modalHeader {
       ${({ theme }) => {
         return theme.flexSet({
+          justifyContent: 'center',
           flexDirection: 'row',
         });
       }};
