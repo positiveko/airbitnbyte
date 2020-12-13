@@ -7,10 +7,7 @@ const PropertyMap = ({ property }) => {
   useEffect(() => {
     const container = document.getElementById('myMap');
     const options = {
-      center: new kakao.maps.LatLng(
-        property.latitude,
-        property.longitude
-      ),
+      center: new kakao.maps.LatLng(property.latitude, property.longitude),
       level: 3,
     };
     const map = new kakao.maps.Map(container, options);
@@ -40,7 +37,7 @@ const PropertyMap = ({ property }) => {
     });
 
     marker.setMap(map);
-  }, []);
+  });
 
   return (
     <MapBox>
@@ -61,4 +58,4 @@ const MapBox = styled.div`
   width: 100%;
   padding: 50px 0;
   border-bottom: 1px solid #dddddd;
-`
+`;

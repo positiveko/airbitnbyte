@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { login } from '../../store/actions';
 import axios from 'axios';
 import Fade from 'react-reveal/Fade';
@@ -13,14 +13,13 @@ const Login = ({ onGoogleLogin, openLoginModal, closeModalAll }) => {
   const [userLoginInfo, setUserLoginInfo] = useState({});
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
-  const loginState = useSelector((store) => store.loginReducer);
   const dispatch = useDispatch();
 
   const saveToken = (accessToken) => {
     dispatch(login(accessToken));
     localStorage.setItem('accessToken', accessToken);
     alert('로그인 되었습니다.');
-    console.log(loginState);
+    closeModalAll();
   };
 
   const handleInput = (e) => {

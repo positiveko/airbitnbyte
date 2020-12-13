@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme, flexCenter } from '../../styles/theme';
+import { theme } from '../../styles/theme';
 import { HiShieldCheck } from 'react-icons/hi';
 import { MdStar } from 'react-icons/md';
 import { FaMedal } from 'react-icons/fa';

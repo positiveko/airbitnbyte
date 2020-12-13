@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
@@ -16,14 +15,11 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
     recommendedProperties
   );
 
-  const loginState = useSelector((store) => store.loginReducer);
-
   const handleBookmark = (event, property) => {
     event.stopPropagation();
     const tmpNewRecommendedProperties = [...newRecommendedProperties];
     const idx = tmpNewRecommendedProperties.indexOf(property);
     tmpNewRecommendedProperties[idx].isBookmarked = !property.isBookmarked;
-    console.log(property.propertyId);
 
     axios(BOOKMARK_API, {
       method: tmpNewRecommendedProperties[idx].isBookmarked ? 'post' : 'delete',
@@ -83,8 +79,6 @@ const PropertyOthers = ({ recommendedProperties, moveToDetailPage }) => {
   const slideNext = () => {
     sliderRef.current.slickNext();
   };
-
-  console.log(recommendedProperties);
 
   return (
     <OtherProperties>

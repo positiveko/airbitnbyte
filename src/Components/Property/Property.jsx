@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
 import PropertyGallery from './PropertyGallery';
 import PropertyDetail from './PropertyDetail';
@@ -20,14 +21,15 @@ import { BsHeart, BsHeartFill } from 'react-icons/bs';
 const ACCESS_TOKEN = localStorage.getItem('accessToken');
 
 const Property = (props) => {
+  const dateState = useSelector((store) => store.searchFilterReducer);
   const [isLoading, setLoading] = useState(true);
   const [isBookmarked, setBookmarked] = useState(true);
   const [property, setProperty] = useState({});
   const [focus, setFocus] = useState(null);
   const [focusedInput, setFocusedInput] = useState('startDate');
   const [dateRange, setdateRange] = useState({
-    startDate: null,
-    endDate: null,
+    startDate: dateState.checkIn,
+    endDate: dateState.checkOut,
   });
 
   const { startDate, endDate } = dateRange;
@@ -75,6 +77,8 @@ const Property = (props) => {
     history.push(`/property/${id}`);
     window.scrollTo(0, 0);
   };
+
+  console.log(property);
 
   if (isLoading) {
     return (

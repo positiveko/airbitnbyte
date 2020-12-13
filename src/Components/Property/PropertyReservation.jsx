@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { DateRangePicker } from 'react-dates';
+import { useSelector } from 'react-redux';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import 'moment/locale/ko';
 import { theme } from '../../styles/theme';
 import { MdStar } from 'react-icons/md';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io';
-import { BiCurrentLocation } from 'react-icons/bi';
-import { HiInformationCircle } from 'react-icons/hi';
 
 const PropertyReservation = ({
   property,
@@ -18,11 +17,12 @@ const PropertyReservation = ({
   handleOnDateChange,
   setFocus,
 }) => {
+  const capacityState = useSelector((store) => store.searchFilterReducer);
   const [isCapacityModalOn, setCapacityModal] = useState(false);
   const [capacity, setCapacity] = useState([
-    { value: '성인', id: 'adult', count: 1 },
-    { value: '어린이', id: 'child', count: 0 },
-    { value: '유아', id: 'infant', count: 0 },
+    { value: '성인', id: 'adult', count: capacityState.capacity.adult },
+    { value: '어린이', id: 'child', count: capacityState.capacity.child },
+    { value: '유아', id: 'infant', count: capacityState.capacity.infant },
   ]);
   const [nights, setNights] = useState(1);
 
